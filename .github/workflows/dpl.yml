@@ -1,32 +1,35 @@
+# .github/workflows/deploy.yml
+
 name: Deploy to Railway
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Use Node 12
-        uses: actions/setup-node@v1
+      - name: Set up Python
+        uses: actions/setup-python@v2
         with:
-          node-version: 12.x
+          python-version: 3.x
 
-      - name: Install packages
-        run: yarn install --frozen-lockfile
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      - name: Run tests
-        run: yarn test
+      - name: Install Railway CLI
+        run: |
+          npm i -g @railway/cli
 
-      - name: Install Railway
-        run: npm i -g @railway/cli
-
-      - name: Deploy
+      - name: Deploy to Railway
         run: railway up
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
