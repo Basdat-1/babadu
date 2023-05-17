@@ -31,3 +31,5 @@ jobs:
 
       - name: Deploy to Railway
         run: railway up --apply --no-interactive
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
