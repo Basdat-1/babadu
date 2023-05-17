@@ -27,7 +27,7 @@ jobs:
 
       - name: Install Railway CLI
         run: |
-          curl -sSL https://get.railway.app | sudo bash
+          npm i -g @railway/cli
 
       - name: Deploy to Railway
         run: railway up --apply --no-interactive
