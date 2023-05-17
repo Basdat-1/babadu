@@ -21,9 +21,14 @@ jobs:
           python-version: 3.x
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install Railway CLI
+        run: |
+          curl -sSL https://get.railway.app | sudo bash
 
       - name: Deploy to Railway
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: railway up
+        env: RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: railway up --apply --no-interactive
