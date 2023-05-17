@@ -30,5 +30,6 @@ jobs:
           curl -sSL https://get.railway.app | sudo bash
 
       - name: Deploy to Railway
-        env: RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: railway up --apply --no-interactive
