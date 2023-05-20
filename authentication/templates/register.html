@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Register</title>
+<link rel="stylesheet" href="{% static 'auth-dashboard/style.css' %}">
+{% endblock meta %}
+
+{% block content %}
+<div class="container text-center mt-5">
+    <img src="https://cdn.discordapp.com/attachments/952995624951873608/1104356055129018468/17898105.png" alt="" height="100" class="d-inline-block align-text-top">
+    <div class="title indigo">Register</div>
+    <div class="m-2">
+        Pilih role anda
+        <div class="mt-2">
+            <a href="/register-atlet" type="button" class="btn btn-primary m-1">Atlet</a>
+            <a href="/register-pelatih" type="button" class="btn btn-primary m-1">Pelatih</a>
+            <a href="/register-umpire" type="button" class="btn btn-primary m-1">Umpire</a>
+        </div>
+    </div>
+    <div class="mt-5 small-text">
+        Sudah punya akun? <a href="/login/">Login</a>
+    </div>
+</div>
+{% endblock content %}
