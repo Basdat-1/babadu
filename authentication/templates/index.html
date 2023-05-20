@@ -3,6 +3,7 @@
 
 {% block meta %}
 <title>Babadu</title>
+<link rel="stylesheet" href="{% static 'auth-dashboard/style.css' %}">
 {% endblock meta %}
 
 {% block content %}
@@ -10,8 +11,8 @@
   <img src="https://cdn.discordapp.com/attachments/952995624951873608/1104356055129018468/17898105.png" alt="" height="200" class="d-inline-block align-text-top">
   <div class="title indigo">Babadu - 1</div>
   <div class="m-2">
-      <a href="login.html" type="button" class="btn btn-primary m-1">Login</a>
-      <a href="register.html" type="button" class="btn btn-primary m-1">Register</a>
+      <a href="/login/" type="button" class="btn btn-primary m-1">Login</a>
+      <a href="/register/" type="button" class="btn btn-primary m-1">Register</a>
   </div>
 </div>
 {% endblock content %}

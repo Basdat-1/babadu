@@ -1,0 +1,44 @@
+% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Dashboard Pelatih</title>
+<link rel="stylesheet" href="{% static 'auth-dashboard/style.css' %}">
+{% endblock meta %}
+
+{% block content %}
+<div class="container m-5 text-center">
+  <div class="title indigo mb-5">Dashboard Pelatih</div>
+  
+  <table class="text-left m-auto">
+      <tr>
+        <td>
+          Nama
+        </td>
+        <td>: Rinaldo Sirmon</td>
+      </tr>
+
+      <tr>
+        <td>
+          Email
+        </td> 
+        <td>: rsirmon5@ask.com</td>
+      </tr>
+
+      <tr>
+        <td>
+          Spesialisasi Kategori
+        </td>
+        <td>: Tunggal Putri, Ganda Putra</td>
+      </tr>
+
+      <tr>
+        <td>
+          Tanggal Mulai
+        </td>
+        <td>: 14/08/2007</td>
+      </tr>
+
+    </table>
+</div>
+{% endblock content %}
