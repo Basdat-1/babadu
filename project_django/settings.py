@@ -29,6 +29,8 @@ SECRET_KEY = 'django-insecure-3@5wx%(^*zl68l(o$^m-3%cvjv0g&mom1ra=oj5f048_al57s7
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+CSRF_TRUSTED_ORIGINS = ["https://babadu-1.up.railway.app", "http://localhost:8000", "http://127.0.0.1:8000/"]
+CORS_ORIGIN_WHITELIST = ["https://babadu-1.up.railway.app", "http://localhost:8000", "http://127.0.0.1:8000/"]
 
 # Application definition
 
@@ -80,14 +82,15 @@ WSGI_APPLICATION = 'project_django.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'babadu',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost',
-        'PORT': '5432',
-        'OPTIONS': {
-            'options': '-c search_path=babadu',
-        }
+        'NAME': BASE_DIR / 'db.sqlite3',
+        # 'NAME': 'babadu',
+        # 'USER': 'postgres',
+        # 'PASSWORD': 'postgres',
+        # 'HOST': 'localhost',
+        # 'PORT': '5432',
+        # 'OPTIONS': {
+        #     'options': '-c search_path=babadu',
+        # }
     }
 }
 

@@ -4,11 +4,19 @@ from psycopg2 import Error
 from psycopg2.extras import RealDictCursor
 
 try:
+    '''
+    SETIAP MAU PUSH UNCOMMENT CONNECTION KE RAILWAY & COMMENT CONNECTION LOCAL
+    '''
     connection = psycopg2.connect(user="postgres",
-                        password="postgres",
-                        host="localhost",
-                        port="5432",
-                        database="babadu")
+                        password='nYOB8Ak1NhmAPwuXlIHF',
+                        host="containers-us-west-109.railway.app",
+                        port="5930",
+                        database="railway")
+    # connection = psycopg2.connect(user="postgres",
+    #                     password="postgres",
+    #                     host="localhost",
+    #                     port="5432",
+    #                     database="babadu")
 
     # Create a cursor to perform database operations
     connection.autocommit = True
@@ -32,14 +40,14 @@ def query(query_str: str):
             cursor.execute(query_str)
 
             if query_str.strip().upper().startswith("SELECT"):
-                # Kalau ga error, return hasil SELECT
+                # Kalau tidak error, return hasil SELECT
                 hasil = map_cursor(cursor)
             else:
-                # Kalau ga error, return jumlah row yang termodifikasi oleh INSERT, UPDATE, DELETE
+                # Kalau tidak error, return jumlah row yang termodifikasi oleh INSERT, UPDATE, DELETE
                 hasil = cursor.rowcount
                 connection.commit()
         except Exception as e:
-            # Ga tau error apa
+            # Error yang tidak diketahui
             hasil = e
 
     return hasil
