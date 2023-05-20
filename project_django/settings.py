@@ -82,6 +82,8 @@ WSGI_APPLICATION = 'project_django.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
+
+        '''SETIAP MAU PUSH UNCOMMENT NAME BASE DIR & COMMENT CONFIG LOCAL'''
         'NAME': BASE_DIR / 'db.sqlite3',
         # 'NAME': 'babadu',
         # 'USER': 'postgres',
