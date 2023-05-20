@@ -33,6 +33,7 @@ def register(request):
   if request.method != 'POST':
     return render(request, 'register.html')
 
+@csrf_exempt
 def login(request):
   if request.method != "POST":
     return login_view(request)
