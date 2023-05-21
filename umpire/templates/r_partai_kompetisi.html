@@ -44,8 +44,12 @@
                 <td>{{ partai.jumlah_peserta }}/{{ partai.kapasitas }}</td>
                 <td>
                   {% if partai.jumlah_peserta == partai.kapasitas %}
-                  <button type="button" class="btn btn-primary">Mulai</button>
-                  <button type="button" class="btn btn-primary">Hasil Pertandingan</button>
+                    <a href="">
+                      <button type="button" class="btn btn-primary">Mulai</button>
+                    </a>
+                    <a href="{% url 'get_hasil_pertandingan' %}?nama_event={{ partai.nama_event|urlencode }}&tahun={{ partai.tahun|urlencode }}&jenis_partai={{ partai.jenis_partai|urlencode }}">
+                      <button type="button" class="btn btn-primary">Hasil Pertandingan</button>
+                    </a>
                   {% endif %}
                 </td>
               </tr>

@@ -70,3 +70,30 @@ def get_partai_kompetisi(request):
         "partai_kompetisi": partai_kompetisi
     }
     return render(request, "r_partai_kompetisi.html", context)
+
+def get_hasil_pertandingan(request):
+    nama_event = request.GET.get("nama_event")
+    tahun = request.GET.get("tahun")
+    jenis_partai = request.GET.get("jenis_partai")
+    
+    info_partai = query("""SELECT PK.Jenis_partai, E.Nama_event, E.Nama_stadium, E.total_hadiah,
+                        E.Kategori_Superseries, E.Tgl_mulai, E.Tgl_selesai, S.Kapasitas
+                        FROM EVENT E, PARTAI_KOMPETISI PK, STADIUM S
+                        WHERE E.Nama_event=PK.Nama_event
+                        AND E.Tahun=PK.Tahun_event
+                        AND E.Nama_stadium=S.Nama
+                        AND PK.Jenis_partai='{}'
+                        AND PK.Nama_event='{}'
+                        AND PK.Tahun_event='{}';
+                        """.format(jenis_partai, nama_event, tahun))[0]
+    context = {
+        "jenis_partai": info_partai["jenis_partai"],
+        "nama_event": info_partai["nama_event"],
+        "nama_stadium": info_partai["nama_stadium"],
+        "total_hadiah": info_partai["total_hadiah"],
+        "kategori_superseries": info_partai["kategori_superseries"],
+        "tgl_mulai": info_partai["tgl_mulai"],
+        "tgl_selesai": info_partai["tgl_selesai"],
+        "kapasitas": info_partai["kapasitas"],
+    }
+    return render(request, "hasil_pertandingan.html", context)
