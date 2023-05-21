@@ -41,18 +41,19 @@ def atletHome(request):
     else:
         play_right = 'Left-hand'
 
-    point_history = query(f"""SELECT * FROM POINT_HISTORY WHERE id_atlet = '{id}'""")[0]
-    bulan = convertMonthName(point_history['bulan'])
-
-    total_poin = query(f"""SELECT total_point FROM
-                        (SELECT total_point, CONCAT(tahun, '-', '{{bulan}}', '-', minggu_ke) as waktu
-                        FROM POINT_HISTORY WHERE id_atlet = '{id}') as waktu_history
-                        ORDER BY waktu DESC""")[0]
-    print(total_poin)
-    if not total_poin:
+    point_history = query(f"""SELECT * FROM POINT_HISTORY WHERE id_atlet = '{id}'""")
+    if not point_history:
         total_poin = 0
     else:
+        point_history = point_history[0]
+        bulan = convertMonthName(point_history['bulan'])
+        total_poin = query(f"""SELECT total_point FROM
+                        (SELECT total_point, CONCAT(tahun, '-', '{bulan}', '-', minggu_ke) as waktu
+                        FROM POINT_HISTORY WHERE id_atlet = '{id}') as waktu_history
+                        ORDER BY waktu DESC""")[0]
         total_poin = total_poin['total_point']
+    
+    print(total_poin)
 
     context = {'nama':nama,
                 'email':email,
