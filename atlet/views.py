@@ -41,18 +41,19 @@ def atletHome(request):
     else:
         play_right = 'Left-hand'
 
-    point_history = query(f"""SELECT * FROM POINT_HISTORY WHERE id_atlet = '{id}'""")[0]
-    bulan = convertMonthName(point_history['bulan'])
-
-    total_poin = query(f"""SELECT total_point FROM
-                        (SELECT total_point, CONCAT(tahun, '-', '{{bulan}}', '-', minggu_ke) as waktu
-                        FROM POINT_HISTORY WHERE id_atlet = '{id}') as waktu_history
-                        ORDER BY waktu DESC""")[0]
-    print(total_poin)
-    if not total_poin:
+    point_history = query(f"""SELECT * FROM POINT_HISTORY WHERE id_atlet = '{id}'""")
+    if not point_history:
         total_poin = 0
     else:
+        point_history = point_history[0]
+        bulan = convertMonthName(point_history['bulan'])
+        total_poin = query(f"""SELECT total_point FROM
+                        (SELECT total_point, CONCAT(tahun, '-', '{bulan}', '-', minggu_ke) as waktu
+                        FROM POINT_HISTORY WHERE id_atlet = '{id}') as waktu_history
+                        ORDER BY waktu DESC""")[0]
         total_poin = total_poin['total_point']
+    
+    print(total_poin)
 
     context = {'nama':nama,
                 'email':email,
@@ -89,3 +90,20 @@ def convertMonthName(bulan):
         return '11'
     elif bulan == "Desember":
         return '12'
+    
+def daftarStadium(request):
+    result = query(f"SELECT * FROM STADIUM")
+
+    context = {'list_stadium': result}
+    return render(request, 'daftar_stadium.html', context)
+    
+def daftarEventStadium(request, namaStadium):
+    result = query(f"SELECT * FROM EVENT E WHERE E.nama_stadium = '{namaStadium}'")
+    peserta_mendaftar = query(f"""SELECT COUNT(*) FROM EVENT E JOIN PESERTA_MENDAFTAR_EVENT PME
+                              ON E.nama_event = PME.nama_event
+                              WHERE nama_stadium = '{namaStadium}'""")[0]
+    kapasitas_stadium = query(f"SELECT kapasitas FROM STADIUM WHERE nama = '{namaStadium}'")[0]
+    kapasitas = (str)(peserta_mendaftar['count']) + " / " + (str)(kapasitas_stadium['kapasitas'])
+    context = {'list_event': result,
+               'kapasitas': kapasitas,}
+    return render(request, 'stadium_event.html', context)
