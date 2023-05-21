@@ -23,7 +23,7 @@ def c_latih_atlet(request):
     id_atlet = str(query(f"SELECT A.ID FROM MEMBER M, ATLET A WHERE M.ID=A.ID AND M.Nama='{nama_atlet}';")[0]["id"])
 
     query(f"INSERT INTO ATLET_PELATIH VALUES ('{id_pelatih}', '{id_atlet}');")
-    return redirect('/pelatih/list_atlet')
+    return redirect('/pelatih/list-atlet')
 
 def latih_atlet_view(request, fail):
     list_atlet = query("SELECT M.Nama FROM MEMBER M, ATLET A WHERE M.ID=A.ID;")

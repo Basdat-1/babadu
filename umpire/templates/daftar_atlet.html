@@ -35,23 +35,23 @@
                 <tbody>
                   {% for atlet in atlet_kuali %}
                   <tr>
-                    <th>{{ atlet.nama }}</th>
-                    <th>{{ atlet.tgl_lahir }}</th>
-                    <th>{{ atlet.negara_asal }}</th>
+                    <td>{{ atlet.nama }}</td>
+                    <td>{{ atlet.tgl_lahir }}</td>
+                    <td>{{ atlet.negara_asal }}</td>
                     {% if atlet.play_right %}
-                      <th>Ya</th>
+                      <td>Ya</td>
                     {% else %}
-                      <th>Tidak</th>
+                      <td>Tidak</td>
                     {% endif %}
-                    <th>{{ atlet.height }}</th>
-                    <th>{{ atlet.world_rank }}</th>
-                    <th>{{ atlet.world_tour_rank }}</th>
+                    <td>{{ atlet.height }}</td>
+                    <td>{{ atlet.world_rank }}</td>
+                    <td>{{ atlet.world_tour_rank }}</td>
                     {% if atlet.jenis_kelamin %}
-                      <th>Laki-Laki</th>
+                      <td>Laki-Laki</td>
                     {% else %}
-                      <th>Perempuan</th>
+                      <td>Perempuan</td>
                     {% endif %}
-                    <th>{{ atlet.total_point }}</th>
+                    <td>{{ atlet.total_point }}</td>
                   </tr>
                   {% endfor %}   
                 </tbody>
@@ -85,22 +85,22 @@
               <tbody>
                 {% for atlet in atlet_nonkuali %}
                 <tr>
-                  <th>{{ atlet.nama }}</th>
-                  <th>{{ atlet.tgl_lahir }}</th>
-                  <th>{{ atlet.negara_asal }}</th>
+                  <td>{{ atlet.nama }}</td>
+                  <td>{{ atlet.tgl_lahir }}</td>
+                  <td>{{ atlet.negara_asal }}</td>
                   {% if atlet.play_right %}
-                    <th>Ya</th>
+                    <td>Ya</td>
                   {% else %}
-                    <th>Tidak</th>
+                    <td>Tidak</td>
                   {% endif %}
-                  <th>{{ atlet.height }}</th>
-                  <th>-</th>
+                  <td>{{ atlet.height }}</td>
+                  <td>-</td>
                   {% if atlet.jenis_kelamin %}
-                    <th>Laki-Laki</th>
+                    <td>Laki-Laki</td>
                   {% else %}
-                    <th>Perempuan</th>
+                    <td>Perempuan</td>
                   {% endif %}
-                  <th>0</th>
+                  <td>0</td>
                 </tr>
                 {% endfor %}   
               </tbody>
@@ -130,10 +130,10 @@
             <tbody>
               {% for atlet in atlet_ganda %}
               <tr>
-                <th>{{ atlet.id_atlet_ganda }}</th>
-                <th>{{ atlet.nama_atlet_1 }}</th>
-                <th>{{ atlet.nama_atlet_2 }}</th>
-                <th>{{ atlet.total_point }}</th>
+                <td>{{ atlet.id_atlet_ganda }}</td>
+                <td>{{ atlet.nama_atlet_1 }}</td>
+                <td>{{ atlet.nama_atlet_2 }}</td>
+                <td>{{ atlet.total_point }}</td>
               </tr>
               {% endfor %}   
             </tbody>

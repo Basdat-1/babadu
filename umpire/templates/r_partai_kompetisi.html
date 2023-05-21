@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>List Partai Kompetisi</title>
+<link rel="stylesheet" href="{% static 'umpire/style.css' %}">
+{% endblock meta %}
+
+{% block content %}
+<!-- nav -->
+<section class="ftco-section m-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 text-center mb-5">
+        <h2 class="title indigo heading-section">List Partai Kompetisi</h2>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table-wrap">
+          <table class="table">
+            <thead class="thead-primary">
+              <tr>
+                <th>Nama Event</th>
+                <th>Tahun</th>
+                <th>Stadium</th>
+                <th>Jenis Partai</th>
+                <th>Kategori Superseries</th>
+                <th>Tanggal Mulai</th>
+                <th>Tanggal Selesai</th>
+                <th>Kapasitas</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for partai in partai_kompetisi %}
+              <tr>
+                <td>{{ partai.nama_event }}</td>
+                <td>{{ partai.tahun }}</td>
+                <td>{{ partai.nama_stadium }}</td>
+                <td>{{ partai.jenis_partai }}</td>
+                <td>{{ partai.kategori_superseries }}</td>
+                <td>{{ partai.tgl_mulai }}</td>
+                <td>{{ partai.tgl_selesai }}</td>
+                <td>{{ partai.jumlah_peserta }}/{{ partai.kapasitas }}</td>
+                <td>
+                  {% if partai.jumlah_peserta == partai.kapasitas %}
+                  <button type="button" class="btn btn-primary">Mulai</button>
+                  <button type="button" class="btn btn-primary">Hasil Pertandingan</button>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock content %}
