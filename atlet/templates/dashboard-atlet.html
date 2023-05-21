@@ -1,4 +1,4 @@
-% extends 'base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block meta %}
@@ -15,72 +15,72 @@
         <td>
           Nama Lengkap
         </td>
-        <td>: Burr Biffin</td>
+        <td>: {{nama}}</td>
         <td></td>
         <td></td>
         <td>
           Jenis Kelamin
         </td>
-        <td>: Laki-Laki</td>
+        <td>: {{sex}}</td>
       </tr>
 
       <tr>
         <td>
           Negara
         </td>
-        <td>: Indonesia</td>
+        <td>: {{result.negara_asal}}</td>
         <td></td>
         <td></td>
         <td>
           Pelatih
        </td>
-      <td>: Rinaldo Sirmon</td>
+      <td>: {{pelatih}}</td>
       </tr>
 
       <tr>
         <td>
           Email
         </td> 
-        <td>: bbiffina@sciencedaily.com</td>
+        <td>: {{email}}</td>
         <td></td>
         <td></td>
         <td>
           Status
       </td>
-      <td>: Qualified</td>
+      <td>: {{kualifikasi}}</td>
       </tr>
 
       <tr>
         <td>
           Tanggal lahir
         </td>
-        <td>: 12/07/1993</td>
+        <td>: {{result.tgl_lahir}}</td>
         <td></td>
         <td></td>
         <td>
           World Rank
       </td>
-      <td>: 1</td>
+      <td>: {{result.world_rank}}</td>
       </tr>
 
       <tr>
         <td>
           Play
         </td>
-        <td>: Right Hand</td>
+        <td>: {{play_right}}</td>
         <td></td>
         <td></td>
         <td>
           Total Poin
       </td>
-      <td>: 9120</td>
+      <td>: {{total_poin}}</td>
       </tr>
 
       <tr>
         <td>
           Tinggi badan
         </td>
-        <td>: 165 cm</td>
+        <td>: {{result.height}} cm</td>
       </tr>
 
     </table>
