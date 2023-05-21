@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Create Latih Atlet</title>
+<link rel="stylesheet" href="{% static 'pelatih/style.css' %}">
+{% endblock meta %}
+
+{% block content %}
+<div class="container-sm">
+  <div class="daftar-sponsor">
+    <h2 class="fw-bold mb-2">Create Latih Atlet</h1>
+    {% if fail %}
+      <div class="alert alert-danger" role="alert">
+          Data yang diisikan belum lengkap, silahkan lengkapi data terlebih dahulu
+      </div>
+    {% endif %}
+    <form method="POST" action="" id="atlet_form">
+      {% csrf_token %}
+      <table>
+
+        <tr>
+          <td>
+            Nama atlet:
+          </td>
+          <td class="form">
+            <select class="form-select sponsor" name="nama_atlet" id="nama_atlet" form="atlet_form">
+              <option value="" disabled selected>
+                Pilih
+              </option>
+              {% for atlet in list_atlet %}
+                <option value="{{atlet.nama}}">{{ atlet.nama }}</option>
+              {% endfor %}
+            </select>
+          </td>
+        </tr>
+
+      </table>
+      <button type="submit" class="btn btn-primary submit_btn">Submit</button>
+    </form>
+
+  </div>
+</div>
+{% endblock content %}

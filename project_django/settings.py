@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'authentication',
+    'pelatih',
+    'umpire',
+    'atlet',
 ]
 
 MIDDLEWARE = [
@@ -91,6 +94,20 @@ DATABASES = {
         # 'OPTIONS': {
         #     'options': '-c search_path=babadu',
         # }
+    }
+}
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {"class": "logging.StreamHandler"},
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+        },
     }
 }
 
