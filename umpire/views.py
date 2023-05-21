@@ -2,7 +2,6 @@ from django.shortcuts import render
 from utils.query import query
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-import logging
 
 # Create your views here.
 @login_required
@@ -51,10 +50,5 @@ def daftar_atlet(request):
         "atlet_nonkuali": atlet_nonkuali,
         "atlet_ganda": atlet_ganda
     }
-
-    # logger = logging.getLogger('django')
-    # logger.info(atlet_kuali)
-    # logger.info(atlet_nonkuali)
-    # logger.info(atlet_ganda)
 
     return render(request, "daftar_atlet.html", context)

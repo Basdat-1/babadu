@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>List Atlet</title>
+<link rel="stylesheet" href="{% static 'pelatih/style.css' %}">
+{% endblock meta %}
+
+{% block content %}
+<section class="ftco-section">
+  <div class="container">
+    <div class="row justify-content-center">
+        <h2 class="heading-section">List Atlet</h2>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table-wrap">
+          <table class="table">
+            <thead class="thead-primary">
+              <tr>
+                <th>Nama Atlet</th>
+                <th>Email</th>
+                <th>World Rank</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for atlet in atlet_dilatih %}
+              <tr>
+                <td>{{ atlet.nama }}</td>
+                <td>{{ atlet.email }}</td>
+                {% if atlet.world_rank %}
+                  <td>{{ atlet.world_rank }}</td>
+                {% else %}
+                  <td>-</td>
+                {% endif %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock content %}
