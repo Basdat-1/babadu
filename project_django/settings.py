@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'authentication',
+    'pelatih',
+    'umpire',
+    'atlet',
 ]
 
 MIDDLEWARE = [
@@ -82,15 +85,29 @@ WSGI_APPLICATION = 'project_django.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': BASE_DIR / 'db.sqlite3',
-        # 'NAME': 'babadu',
-        # 'USER': 'postgres',
-        # 'PASSWORD': 'postgres',
-        # 'HOST': 'localhost',
-        # 'PORT': '5432',
-        # 'OPTIONS': {
-        #     'options': '-c search_path=babadu',
-        # }
+        # 'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': 'babadu',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'localhost',
+        'PORT': '5432',
+        'OPTIONS': {
+            'options': '-c search_path=babadu',
+        }
+    }
+}
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {"class": "logging.StreamHandler"},
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+        },
     }
 }
 
