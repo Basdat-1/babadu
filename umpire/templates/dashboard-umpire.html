@@ -1,0 +1,37 @@
+% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Dashboard Atlet</title>
+<link rel="stylesheet" href="{% static 'auth-dashboard/style.css' %}">
+{% endblock meta %}
+
+{% block content %}
+<div class="container m-5 text-center">
+  <div class="title indigo mb-5">Dashboard</div>
+  
+  <table class="text-left m-auto">
+      <tr>
+        <td>
+          Nama
+        </td>
+        <td>: Dominique Thornally</td>
+      </tr>
+
+      <tr>
+        <td>
+          Negara
+        </td> 
+        <td>: Australia</td>
+      </tr>
+
+      <tr>
+        <td>
+          Email
+        </td>
+        <td>: dthornally0@stanford.edu</td>
+      </tr>
+
+    </table>
+</div>
+{% endblock content %}

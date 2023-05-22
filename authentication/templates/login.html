@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Login</title>
+<link rel="stylesheet" href="{% static 'auth-dashboard/style.css' %}">
+{% endblock meta %}
+
+{% block content %}
+<div class="container text-center mt-5">
+    <img src="https://cdn.discordapp.com/attachments/952995624951873608/1104356055129018468/17898105.png" alt="" height="100" class="d-inline-block align-text-top">
+    <div class="title indigo">Login</div>
+    <div class="mt-3">
+        {% if fail %}
+        <div class="alert alert-danger" role="alert">
+            Mohon masukan data Anda dengan benar
+        </div>
+        {% endif %}
+        <form method="POST" action="/login/">
+            {% csrf_token %}
+            <table class="m-auto">
+              <tr>
+                <td>
+                  Nama:
+                </td>
+                <td class="form">
+                  <input required type="text" name="nama" id="nama">
+                </td>
+              </tr>
+  
+              <tr>
+                <td>
+                  Email:
+                </td>
+                <td class="form">
+                  <input required type="email" name="email" id="email">
+                </td>  
+              </tr>
+  
+            </table>
+            <button type="submit" class="btn btn-primary submit_btn mt-3">Login</button>
+          </form>
+  
+  
+        </div>
+        <div class="mt-5 small-text">
+            Belum punya akun? <a href="/register/">Register</a>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock content %}
