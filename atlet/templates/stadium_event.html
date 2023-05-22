@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Dashboard Atlet</title>
+<link rel="stylesheet" href="{% static 'auth-dashboard/style.css' %}">
+{% endblock meta %}
+
+{% block content %}
+<section class="ftco-section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 text-center mb-5">
+        <h2 class="heading-section">Daftarkan Dirimu ke Pertandingan Menarik!</h2>
+        <h3 class="heading-section">Pilih Event di Stadium Gelora Bung Karno</h3>
+        
+        <!-- <a href="/Users/annisaazzahra/Desktop/babadu/templates/cru_daftar_event_atlet_stadium.html">
+          <button type="button" class="btn btn-outline-primary">< Kembali ke Daftar Stadium</button>
+        </a> -->
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table-wrap">
+          <table class="table">
+            <thead class="thead-primary">
+              <tr>
+                <th>No.</th>
+                <th>Nama Event</th>
+                <th>Total Hadiah</th>
+                <th>Tanggal mulai</th>
+                <th>Kategori</th>
+                <th>Kapasitas</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for event in list_event %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ event.nama_event }}</td>
+                <td>{{ event.total_hadiah }}</td>
+                <td>{{ event.tgl_mulai }}</td>
+                <td>{{ event.kategori_superseries }}</td>
+                <td>{{ kapasitas }}</td>
+                <td>
+                  <a href="/Users/annisaazzahra/Desktop/babadu/templates/pilih_kategori_event.html">
+                    <button type="button" class="btn btn-primary">Pilih</button>
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock content %}

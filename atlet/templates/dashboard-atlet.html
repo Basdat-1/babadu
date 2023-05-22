@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Dashboard Atlet</title>
+<link rel="stylesheet" href="{% static 'auth-dashboard/style.css' %}">
+{% endblock meta %}
+
+{% block content %}
+<div class="container m-5 text-center">
+  <div class="title indigo mb-5">Dashboard Atlet</div>
+  
+  <table class="text-left m-auto">
+      <tr>
+        <td>
+          Nama Lengkap
+        </td>
+        <td>: {{nama}}</td>
+        <td></td>
+        <td></td>
+        <td>
+          Jenis Kelamin
+        </td>
+        <td>: {{sex}}</td>
+      </tr>
+
+      <tr>
+        <td>
+          Negara
+        </td>
+        <td>: {{result.negara_asal}}</td>
+        <td></td>
+        <td></td>
+        <td>
+          Pelatih
+       </td>
+      <td>: {{pelatih}}</td>
+      </tr>
+
+      <tr>
+        <td>
+          Email
+        </td> 
+        <td>: {{email}}</td>
+        <td></td>
+        <td></td>
+        <td>
+          Status
+      </td>
+      <td>: {{kualifikasi}}</td>
+      </tr>
+
+      <tr>
+        <td>
+          Tanggal lahir
+        </td>
+        <td>: {{result.tgl_lahir}}</td>
+        <td></td>
+        <td></td>
+        <td>
+          World Rank
+      </td>
+      <td>: {{result.world_rank}}</td>
+      </tr>
+
+      <tr>
+        <td>
+          Play
+        </td>
+        <td>: {{play_right}}</td>
+        <td></td>
+        <td></td>
+        <td>
+          Total Poin
+      </td>
+      <td>: {{total_poin}}</td>
+      </tr>
+
+      <tr>
+        <td>
+          Tinggi badan
+        </td>
+        <td>: {{result.height}} cm</td>
+      </tr>
+
+    </table>
+</div>
+{% endblock content %}

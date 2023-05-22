@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Daftar Atlet</title>
+<link rel="stylesheet" href="{% static 'umpire/style.css' %}">
+{% endblock meta %}
+
+{% block content %}
+<!-- nav -->
+<div class="container text-center mt-5">
+    <div class="title indigo text-left mt-5">Daftar Atlet</div>
+    <!-- ATLET KUALIFIKASI -->
+    <section class="ftco-section mb-4">
+        <div class="row justify-content-center">
+            <h4 class="heading-section indigo">Atlet Kualifikasi</h4>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="table-wrap">
+              <table class="table">
+                <thead class="thead-primary">
+                  <tr>
+                    <th>Nama</th>
+                    <th>Tanggal Lahir</th>
+                    <th>Negara Asal</th>
+                    <th>Play Right</th>
+                    <th>Height</th>
+                    <th>World Rank</th>
+                    <th>World Tour Rank</th>
+                    <th>Jenis Kelamin</th>
+                    <th>Total Point</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for atlet in atlet_kuali %}
+                  <tr>
+                    <td>{{ atlet.nama }}</td>
+                    <td>{{ atlet.tgl_lahir }}</td>
+                    <td>{{ atlet.negara_asal }}</td>
+                    {% if atlet.play_right %}
+                      <td>Ya</td>
+                    {% else %}
+                      <td>Tidak</td>
+                    {% endif %}
+                    <td>{{ atlet.height }}</td>
+                    <td>{{ atlet.world_rank }}</td>
+                    <td>{{ atlet.world_tour_rank }}</td>
+                    {% if atlet.jenis_kelamin %}
+                      <td>Laki-Laki</td>
+                    {% else %}
+                      <td>Perempuan</td>
+                    {% endif %}
+                    <td>{{ atlet.total_point }}</td>
+                  </tr>
+                  {% endfor %}   
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    </section>
+
+    <!-- ATLET NON KUALIFIKASI -->
+    <section class="ftco-section mb-4">
+      <div class="row justify-content-center">
+          <h4 class="heading-section indigo">Atlet Non-Kualifikasi</h4>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table-wrap">
+            <table class="table">
+              <thead class="thead-primary">
+                <tr>
+                  <th>Nama</th>
+                  <th>Tanggal Lahir</th>
+                  <th>Negara Asal</th>
+                  <th>Play Right</th>
+                  <th>Height</th>
+                  <th>World Rank</th>
+                  <th>Jenis Kelamin</th>
+                  <th>Total Point</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for atlet in atlet_nonkuali %}
+                <tr>
+                  <td>{{ atlet.nama }}</td>
+                  <td>{{ atlet.tgl_lahir }}</td>
+                  <td>{{ atlet.negara_asal }}</td>
+                  {% if atlet.play_right %}
+                    <td>Ya</td>
+                  {% else %}
+                    <td>Tidak</td>
+                  {% endif %}
+                  <td>{{ atlet.height }}</td>
+                  <td>-</td>
+                  {% if atlet.jenis_kelamin %}
+                    <td>Laki-Laki</td>
+                  {% else %}
+                    <td>Perempuan</td>
+                  {% endif %}
+                  <td>0</td>
+                </tr>
+                {% endfor %}   
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+  </section>
+
+  <!-- ATLET GANDA -->
+  <section class="ftco-section mb-4">
+    <div class="row justify-content-center">
+        <h4 class="heading-section indigo">Atlet Ganda</h4>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table-wrap">
+          <table class="table">
+            <thead class="thead-primary">
+              <tr>
+                <th>ID Atlet Ganda</th>
+                <th>Nama Atlet 1</th>
+                <th>Nama Atlet 2</th>
+                <th>Total Point</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for atlet in atlet_ganda %}
+              <tr>
+                <td>{{ atlet.id_atlet_ganda }}</td>
+                <td>{{ atlet.nama_atlet_1 }}</td>
+                <td>{{ atlet.nama_atlet_2 }}</td>
+                <td>{{ atlet.total_point }}</td>
+              </tr>
+              {% endfor %}   
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+</section>
+</div>
+{% endblock content %}
