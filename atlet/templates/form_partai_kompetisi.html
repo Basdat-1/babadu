@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Dashboard Atlet</title>
+<link rel="stylesheet" href="{% static 'auth-dashboard/style.css' %}">
+{% endblock meta %}
+
+{% block content %}
+<section class="ftco-section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 text-center mb-5">
+        <h2 class="heading-section">Pilih Kategori</h2>
+
+        <!-- <a href="/Users/annisaazzahra/Desktop/babadu/templates/stadium_event.html">
+          <button type="button" class="btn btn-outline-primary">< Kembali ke Daftar Event</button>
+        </a> -->
+      </div>
+    </div>
+    <div class="card text-center">
+        <div class="card-header">
+          Detailed Event
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">{{ result.nama_event }}</h5>
+          <p class="card-text">Total Hadiah: {{ result.total_hadiah }}</p>
+          <p class="card-text">Tanggal Mulai: {{ result.tgl_mulai }}</p>
+          <p class="card-text">Tanggal Selesai: {{ result.tgl_selesai }}</p>
+          <p class="card-text">Kategori: {{ result.kategori_superseries }}</p>
+          <p class="card-text">Kapasitas: {{ jumlah_peserta }}/{{ kapasitas_stadium }}</p>
+          <p class="card-text">Stadium: {{ result.nama_stadium }}</p>
+          <p class="card-text">Negara: {{ result.negara }}</p>
+        </div>
+      </div>
+  </div>
+</section>
+
+<br>
+<br>
+
+<section class="ftco-section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-6 text-center mb-5">
+          <h5 class="heading-section">Pilih Kategori</h5>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table-wrap">
+            <table class="table">
+              <thead class="thead-primary">
+                <tr>
+                  <th>No</th>
+                  <th>Kategori</th>
+                  <th>Partner</th>
+                  <th>Kapasitas</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for partai in list_partai %}
+                <tr>
+                  <th>{{ forloop.counter }}</th>
+                  <td>{{ partai.jenis_partai }}</td>
+                  <td>{{ partai.list_atlet }}</td>
+                  <td>{{ partai.kapasitas }}/{{ kapasitas_stadium }}</td>
+                  <td>
+                    <a href="">
+                      <button type="button" class="btn btn-primary">Join</button>
+                    </a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock content %}
