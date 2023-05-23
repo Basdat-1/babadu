@@ -99,11 +99,5 @@ def daftarStadium(request):
     
 def daftarEventStadium(request, namaStadium):
     result = query(f"SELECT * FROM EVENT E WHERE E.nama_stadium = '{namaStadium}'")
-    peserta_mendaftar = query(f"""SELECT COUNT(*) FROM EVENT E JOIN PESERTA_MENDAFTAR_EVENT PME
-                              ON E.nama_event = PME.nama_event
-                              WHERE nama_stadium = '{namaStadium}'""")[0]
-    kapasitas_stadium = query(f"SELECT kapasitas FROM STADIUM WHERE nama = '{namaStadium}'")[0]
-    kapasitas = (str)(peserta_mendaftar['count']) + " / " + (str)(kapasitas_stadium['kapasitas'])
-    context = {'list_event': result,
-               'kapasitas': kapasitas,}
+    context = {'list_event': result,}
     return render(request, 'stadium_event.html', context)
