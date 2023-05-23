@@ -98,6 +98,97 @@ def daftarStadium(request):
     return render(request, 'daftar_stadium.html', context)
     
 def daftarEventStadium(request, namaStadium):
-    result = query(f"SELECT * FROM EVENT E WHERE E.nama_stadium = '{namaStadium}'")
-    context = {'list_event': result,}
+    result = query(f"SELECT * FROM EVENT WHERE nama_stadium = '{namaStadium}'")
+    context = {'list_event': result,
+               'namaStadium': namaStadium}
     return render(request, 'stadium_event.html', context)
+
+def daftarPartaiKompetisi(request, namaStadium, namaEvent, tahunEvent):
+    result = query(f"""SELECT * FROM EVENT WHERE nama_event = '{namaEvent}' AND tahun = '{tahunEvent}'""")[0]
+    jumlah_peserta = query(f"""SELECT COUNT(nomor_peserta) FROM PESERTA_MENDAFTAR_EVENT
+                      WHERE nama_event = '{namaEvent}' AND tahun = '{tahunEvent}'""")[0]
+    kapasitas_stadium = query(f"""SELECT kapasitas FROM STADIUM WHERE nama = '{namaStadium}'""")[0]['kapasitas']
+    
+    print(result)
+
+    list_kategori = query(f"""SELECT jenis_partai FROM PARTAI_KOMPETISI
+                        WHERE nama_event = '{namaEvent}' AND tahun_event = '{tahunEvent}'""")
+    print(list_kategori)
+    list_partai = []
+
+    list_atlet_putra = query(f"""SELECT id_atlet FROM ATLET_KUALIFIKASI AK
+                            JOIN ATLET A ON AK.id_atlet = A.id
+                            WHERE A.jenis_kelamin = 'True' AND id_atlet NOT IN
+                            (SELECT id_atlet_kualifikasi
+                            FROM ATLET_GANDA
+                            UNION
+                            SELECT id_atlet_kualifikasi_2
+                            FROM ATLET_GANDA)""")
+    list_atlet_putri = query(f"""SELECT id_atlet FROM ATLET_KUALIFIKASI AK
+                            JOIN ATLET A ON AK.id_atlet = A.id
+                            WHERE A.jenis_kelamin = 'False' AND id_atlet NOT IN
+                            (SELECT id_atlet_kualifikasi
+                            FROM ATLET_GANDA
+                            UNION
+                            SELECT id_atlet_kualifikasi_2
+                            FROM ATLET_GANDA)""")
+    list_atlet_putra_putri = list_atlet_putri = query(f"""SELECT id_atlet FROM ATLET_KUALIFIKASI AK
+                            JOIN ATLET A ON AK.id_atlet = A.id
+                            WHERE id_atlet NOT IN
+                            (SELECT id_atlet_kualifikasi
+                            FROM ATLET_GANDA
+                            UNION
+                            SELECT id_atlet_kualifikasi_2
+                            FROM ATLET_GANDA)""")
+    
+    for kategori in list_kategori:
+        print(kategori)
+        dict_kategori = {}
+
+        if kategori['jenis_partai'] == 'MS':
+            dict_kategori['jenis_partai'] = 'Tunggal Putra'
+            dict_kategori["list_atlet"] = "-"
+            kapasitas_partai = query(f"""SELECT COUNT(*) FROM PARTAI_PESERTA_KOMPETISI
+                                WHERE jenis_partai = 'MS' AND nama_event = '{namaEvent}'
+                                AND tahun_event = '{tahunEvent}'""")[0]
+            dict_kategori['kapasitas'] = kapasitas_partai['count']
+            
+        elif kategori['jenis_partai'] == 'WS':
+            dict_kategori['jenis_partai'] = 'Tunggal Putri'
+            dict_kategori["list_atlet"] = "-"
+            kapasitas_partai = query(f"""SELECT COUNT(*) FROM PARTAI_PESERTA_KOMPETISI
+                                WHERE jenis_partai = 'WS' AND nama_event = '{namaEvent}'
+                                AND tahun_event = '{tahunEvent}'""")[0]
+            dict_kategori['kapasitas'] = kapasitas_partai['count']
+            
+        elif kategori['jenis_partai'] == 'MD':
+            dict_kategori['jenis_partai'] = 'Ganda Putra'
+            dict_kategori["list_atlet"] = list_atlet_putra
+            kapasitas_partai = query(f"""SELECT COUNT(*) FROM PARTAI_PESERTA_KOMPETISI
+                                WHERE jenis_partai = 'MD' AND nama_event = '{namaEvent}'
+                                AND tahun_event = '{tahunEvent}'""")[0]
+            dict_kategori['kapasitas'] = kapasitas_partai['count']
+            
+        elif kategori['jenis_partai'] == 'WD':
+            dict_kategori['jenis_partai'] = 'Ganda Putri'
+            dict_kategori["list_atlet"] = list_atlet_putri
+            kapasitas_partai = query(f"""SELECT COUNT(*) FROM PARTAI_PESERTA_KOMPETISI
+                                WHERE jenis_partai = 'WD' AND nama_event = '{namaEvent}'
+                                AND tahun_event = '{tahunEvent}'""")[0]
+            dict_kategori['kapasitas'] = kapasitas_partai['count']
+            
+        else:
+            dict_kategori['jenis_partai'] = 'Ganda Campuran'
+            dict_kategori["list_atlet"] = list_atlet_putra_putri
+            kapasitas_partai = query(f"""SELECT COUNT(*) FROM PARTAI_PESERTA_KOMPETISI
+                                WHERE jenis_partai = 'XD' AND nama_event = '{namaEvent}'
+                                AND tahun_event = '{tahunEvent}'""")[0]
+            dict_kategori['kapasitas'] = kapasitas_partai['count']
+            
+        list_partai.append(dict_kategori)
+        
+    context = {'result':result,
+               'jumlah_peserta':jumlah_peserta,
+               'kapasitas_stadium': kapasitas_stadium,
+               'list_partai':list_partai,}
+    return render(request, 'form_partai_kompetisi.html', context)
