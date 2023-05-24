@@ -27,10 +27,6 @@ def get_role(email):
     return 'atlet', is_atlet[0]['id']
   else:
     return '', ''
-  
-def get_id(nama, email):
-  id = query(f"SELECT ID FROM MEMBER WHERE nama='{nama}' AND email='{email}'")[0]["id"]
-  return id
 
   
 def register(request):
@@ -61,7 +57,7 @@ def login(request):
     request.session["nama"] = nama
     request.session["email"] = email
     request.session["role"] = role
-    request.session["member_id"] = get_id(nama, email)
+    request.session["member_id"] = member_id
     request.session.set_expiry(0)
     request.session.modified = True
 
