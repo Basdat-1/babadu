@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Babadu</title>
+  <link rel="icon" type="image/x-icon" href="https://cdn.discordapp.com/attachments/952995624951873608/1104356055129018468/17898105.png">
+  <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css'>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.css'>
+
+
+</head>
+<!-- partial:index.partial.html -->
+
+<!-- partial -->
+<script src='https://code.jquery.com/jquery-3.4.1.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js'></script>
+
+{% block content %}
+
+<body>
+    {% include '/Users/annisaazzahra/Desktop/babadu/templates/navbar/navbar-umpire.html' %}
+    {% csrf_token %}
+    <br>
+    <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-6 text-center mb-5">
+            <h2 class="heading-section">Live Score Pertandingan</h2>
+            <h3>{{namaEvent}}</h3>
+            <h3>Partai {{jenisPartai}}</h3>
+          </div>
+        </div>
+     </div>
+    <div class="row justify-content-center" >
+        <div class="col-sm-12 my-auto">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6 text-center mb-5">
+                            
+                            <h5 style="text-align: center" class="card-title">Pertandingan {{ jenis_pertandingan }}</h5>
+                            <div id="stopwatch">00:00:00.000</div>
+                            <button id="startBtn" class="btn btn-primary">Start</button>
+                            <button id="stopBtn" class="btn btn-danger">Stop</button>
+                        </div>
+                      </div>
+                    
+                </div>
+                    <table  class="table"> 
+                        <thead>
+                            <tr>
+                                <th>Tim 1</th>
+                                <th>Tim 2</th>
+                                <th>Score Tim 1</th>
+                                <th>Score Tim 2</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            {% for pertandingan in pertandingans %}
+                                <tr class="data-pertandingan">
+                                    <td>
+                                        <p>{{ pertandingan.tim_1.nama }}</p>
+                                    </td>
+                                    <td>
+                                        <p>{{ pertandingan.tim_2.nama }}</p>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-outline-primary minus-btn" data-team="1" data-row="1">-</button>
+                                        <span class="score-text-tim1" id="score-team1-row-1" data-score="0">0</span>
+                                        <button class="btn btn-outline-primary plus-btn" data-team="1" data-row="1">+</button>
+                                    </td>
+                    
+                                    <!-- Example for team 2 -->
+                                    <td>
+                                        <button class="btn btn-outline-primary minus-btn" data-team="2" data-row="1">-</button>
+                                        <span class="score-text-tim2" id="score-team2-row-1" data-score="0">0</span>
+                                        <button class="btn btn-outline-primary plus-btn" data-team="2" data-row="1">+</button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <button id="btnNext" class="btn btn-primary">next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    {{ pertandingans|json_script:"data_pertandingan" }}
+    <script>
+        $(document).ready(function() {
+            var startTime, elapsedTime = 0;
+            var timerInterval;
+
+            function startStopwatch() {
+                startTime = new Date()
+                timerInterval = setInterval(updateStopwatch, 10);
+            }
+
+            function updateStopwatch() {
+                var currentTime = Date.now();
+                elapsedTime = currentTime - startTime.getTime();
+                var formattedTime = formatTime(elapsedTime);
+                $("#stopwatch").text(formattedTime);
+            }
+
+            function stopStopwatch() {
+                elapsedTime = parseInt(Date.now() / 1000) - (startTime.getTime() / 1000)
+                clearInterval(timerInterval);
+                // saveStopwatch(elapsedTime);
+            }
+
+
+            function formatTime(time) {
+                var hours = Math.floor(time / 3600000);
+                var minutes = Math.floor((time % 3600000) / 60000);
+                var seconds = Math.floor((time % 60000) / 1000);
+                var milliseconds = time % 1000;
+
+                hours = padZero(hours, 2);
+                minutes = padZero(minutes, 2);
+                seconds = padZero(seconds, 2);
+                milliseconds = padZero(milliseconds, 3);
+
+                return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
+            }
+
+            function padZero(value, length) {
+                return value.toString().padStart(length, "0");
+            }
+
+            function saveStopwatch(time) {
+                const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                
+                $.ajax({
+                    type: 'POST',
+                    url: "/umpire/save_stopwatch",
+                    headers: {'X-CSRFToken': csrftoken},
+                    data: {
+                        'elapsed_time': time
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        // Lakukan tindakan setelah berhasil menyimpan stopwatch
+                    },
+                    error: function(xhr, textStatus, error) {
+                        console.log(xhr.responseText);
+                        // Lakukan tindakan jika terjadi kesalahan saat menyimpan stopwatch
+                    }
+                });
+            }
+
+            $("#startBtn").click(function() {
+                startStopwatch();
+            });
+
+            $("#stopBtn").click(function() {
+                stopStopwatch();
+            });
+
+            $("#btnNext").click(function () {
+                const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                const padStart2 = (data) => data.toString().padStart(2, "0") 
+                const startDate = startTime.getFullYear() + "-" + padStart2(startTime.getMonth() + 1) + "-" + padStart2(startTime.getDate())
+                const startTimeOnly = padStart2(startTime.getHours()) + ":" + padStart2(startTime.getMinutes()) + ":" + padStart2(startTime.getSeconds())
+                const dataPertandingan = JSON.parse(document.getElementById('data_pertandingan').textContent)
+                const dataPost = {
+                        'tanggal_mulai': startDate,
+                        'waktu_mulai': startTimeOnly,
+                        'jenis_babak': '{{ jenisBabak }}',
+                        'data_pertandingan': dataPertandingan,
+                        'nama_event': '{{ namaEvent }}',
+                        'jenis_partai': '{{ jenisPartai }}',
+                        'durasi': elapsedTime,
+                    };
+
+                console.log(dataPost)
+
+                $.ajax({
+                    type: 'POST',
+                    url: "/umpire/start_stopwatch",
+                    contentType: 'application/json; charset=utf-8',
+                    headers: {'X-CSRFToken': csrftoken},
+                    data: JSON.stringify(dataPost),
+                    success: function(response) {
+                        console.log(response);
+                        // Lakukan tindakan setelah berhasil menyimpan stopwatch
+                    },
+                    error: function(xhr, textStatus, error) {
+                        console.log(xhr.responseText);
+                        // Lakukan tindakan jika terjadi kesalahan saat menyimpan stopwatch
+                    }
+                });
+            })
+        });
+
+
+        $(document).ready(function() {
+        // Fungsi untuk mengubah skor tim
+        function changeScore(team, row, amount) {
+            var scoreElement = $("#score-" + team + "-row-" + row);
+            var currentScore = parseInt(scoreElement.data("score"));
+            var newScore = currentScore + amount;
+            scoreElement.text(newScore);
+            scoreElement.data("score", newScore);
+
+            // Kirim skor yang diperbarui ke server melalui AJAX
+            saveScore(team, row, newScore);
+        }
+
+        // Fungsi untuk menyimpan skor ke server melalui AJAX
+        function saveScore(team, row, score) {
+            $.ajax({
+                type: 'POST',
+                url: '/update_score/',
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                data: {
+                    'team': team,
+                    'row': row,
+                    'score': score
+                },
+                success: function(response) {
+                    console.log(response);
+                    // Lakukan tindakan setelah berhasil menyimpan skor
+                },
+                error: function(xhr, textStatus, error) {
+                    console.log(xhr.responseText);
+                    // Lakukan tindakan jika terjadi kesalahan saat menyimpan skor
+                }
+            });
+        }
+
+        // Handler untuk tombol plus
+        $(".plus-btn").click(function() {
+            var team = $(this).data("team");
+            var row = $(this).closest("tr").index() + 1;
+            changeScore(team, row, 1);
+        });
+
+        // Handler untuk tombol minus
+        $(".minus-btn").click(function() {
+            var team = $(this).data("team");
+            var row = $(this).closest("tr").index() + 1;
+            changeScore(team, row, -1);
+        });
+    });
+
+    </script>
+ {% endblock %}
