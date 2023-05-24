@@ -1,7 +1,10 @@
+import string
+from django.http import JsonResponse
 from django.shortcuts import render
 from utils.query import query
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+import json
 
 # Create your views here.
 @login_required
@@ -66,6 +69,7 @@ def get_partai_kompetisi(request):
                             GROUP BY E.Nama_event, E.Tahun, E.Nama_stadium, PK.Jenis_partai,
                             E.Kategori_Superseries, E.Tgl_mulai, E.Tgl_selesai, S.Kapasitas;
                         """)
+    request.session['nama_event'] = partai_kompetisi[0]['nama_event']
     context = {
         "partai_kompetisi": partai_kompetisi
     }
@@ -97,3 +101,217 @@ def get_hasil_pertandingan(request):
         "kapasitas": info_partai["kapasitas"],
     }
     return render(request, "hasil_pertandingan.html", context)
+
+def get_member_ganda(id_atlet_ganda):
+    atlet_ganda_row = query(f"""
+        SELECT ag.* FROM atlet_ganda as ag WHERE ag.id_atlet_ganda = '{id_atlet_ganda}' LIMIT 1
+    """)[0]
+
+    data_member = query(f"""
+        SELECT * FROM member as m WHERE m.id IN 
+        ('{atlet_ganda_row['id_atlet_kualifikasi']}', '{atlet_ganda_row['id_atlet_kualifikasi_2']}')
+        LIMIT 2
+    """)
+
+    return data_member
+
+def get_member_tunggal(id_kualifikasi):
+    data_member = query(f"""
+        SELECT * FROM member as member WHERE member.id = '{id_kualifikasi}'
+        LIMIT 1
+    """)[0]
+
+    return data_member
+
+def c_pertandingan(request, namaEvent, jenisPartai):
+    
+    pesertas = query(f"""
+        SELECT pk.*
+        FROM peserta_kompetisi AS pk
+        INNER JOIN partai_peserta_kompetisi AS ppk
+        ON pk.nomor_peserta = ppk.nomor_peserta
+        WHERE ppk.jenis_partai = '{jenisPartai}' AND ppk.nama_event = '{namaEvent}'
+    """)
+
+    pertandingans = []
+    jumlah_pertandingan = len(pesertas) // 2
+    for i in range(jumlah_pertandingan):
+        # 0 : 0 - 1
+        # 1 : 2 - 3
+        # 2 : 4 - 5
+        # 3 : 6 - 7
+        tim_1 = pesertas[i * 2]
+        tim_2 = pesertas[i * 2 + 1]
+        pertandingan = {
+            'tim_1': tim_1,
+            'tim_2': tim_2
+        }
+
+        if tim_1['id_atlet_ganda'] != None:
+            member_ganda_1 = get_member_ganda(tim_1['id_atlet_ganda'])
+            tim_1['nama'] = " & ".join(map(lambda member: member['nama'], member_ganda_1))
+        else:
+            member_tunggal_1 = get_member_tunggal(tim_1['id_atlet_kualifikasi'])
+            tim_1['nama'] = member_tunggal_1['nama']
+
+        if tim_2['id_atlet_ganda'] != None:
+            member_ganda_2 = get_member_ganda(tim_2['id_atlet_ganda'])
+            tim_2['nama'] = " & ".join(map(lambda member: member['nama'], member_ganda_2))
+        else:
+            member_tunggal_2 = get_member_tunggal(tim_2['id_atlet_kualifikasi'])
+            tim_2['nama'] = member_tunggal_2['nama']
+
+        pertandingans.append(pertandingan)
+
+    total_peserta=query(f"""
+        SELECT COUNT(*) AS total_peserta
+        FROM partai_peserta_kompetisi AS ppk
+        WHERE ppk.jenis_partai = '{jenisPartai}' AND ppk.nama_event = '{namaEvent}'
+        GROUP BY ppk.nama_event, ppk.jenis_partai
+        LIMIT 1;
+    """)
+
+    total_peserta_real = total_peserta[0]['total_peserta']
+
+    if total_peserta_real == 32:
+        jenisPertandingan = "R32"
+        jenisBabak = "R32"
+    elif total_peserta_real == 16:
+        jenisPertandingan = "R16"
+        jenisBabak = "R16"
+    elif total_peserta_real == 8:
+        jenisPertandingan = "Perempat Final"
+        jenisBabak = "R8"
+    elif total_peserta_real == 4:
+        jenisPertandingan = "Semi Final"
+        jenisBabak = "R4"
+    elif total_peserta_real == 2:
+        jenisPertandingan = "Final"
+        jenisBabak = "R2"
+    else:
+        jenisPertandingan = ""
+        jenisBabak = ""
+
+    context = {
+        'pertandingans': pertandingans,
+        'namaEvent' : namaEvent,
+        'jenis_pertandingan': jenisPertandingan,
+        'jenisPartai' : jenisPartai,
+        'jenisBabak': jenisBabak,
+        'total_peserta_real' : total_peserta_real
+    }
+    
+    return render(request, 'c_pertandingan.html', context)
+
+def get_datetime(request):
+    if request.method == 'POST':
+        date = request.POST.get('date')
+        time = request.POST.get('time')
+
+        # Mengembalikan tanggapan JSON sebagai contoh
+        response = {
+            'status': 'success',
+            'message': 'Tanggal dan waktu berhasil diterima',
+            'date': date,
+            'time': time
+        }
+        print(response)
+        return JsonResponse(response)
+
+def save_match(request):
+    if request.method == 'POST':
+        request_body = json.loads(request.body)
+
+        tanggal_mulai = request_body['tanggal_mulai']
+        waktu_mulai = request_body['waktu_mulai']
+        jenis_babak = request_body['jenis_babak']
+        nama_event = request_body['nama_event']
+        durasi = request_body['durasi']
+        data_pertandingan = request_body['data_pertandingan']
+
+        umpire_id = request.session['member_id']
+        events = query(f"""
+            SELECT * FROM event as e WHERE e.nama_event = '{nama_event}' LIMIT 1
+        """)
+        if len(events) == 0:
+            return JsonResponse({
+                "message": "event tidak ditemukan"
+            }, status=400)
+        
+        event = events[0]
+        tahun_event = event['tahun']
+
+        row_count = query(f"""
+            INSERT INTO match (jenis_babak, tanggal, waktu_mulai, nama_event, tahun_event, id_umpire, total_durasi) 
+            VALUES 
+            ('{jenis_babak}', '{tanggal_mulai}', '{waktu_mulai}', 
+            '{nama_event}', {tahun_event}, '{umpire_id}', {durasi}) 
+        """)
+
+        if (isinstance(row_count, int) and row_count <= 0) or not isinstance(row_count, int):
+            print("error")
+            print(row_count)
+            return JsonResponse({
+                "message": "Gagal insert match",
+            }, status=400)
+
+
+        for i in data_pertandingan:
+            # jenis_babak
+            # tanggal
+            # waktu_mulai
+            # total_durasi
+            # nama_event
+            # tahun_event
+            # id_umpire
+            print(i)
+
+            tim_1_no = i['tim_1']['nomor_peserta']
+            tim_2_no = i['tim_2']['nomor_peserta']
+            
+            row_count = query("""
+                INSERT INTO peserta_mengikuti_match (jenis_babak, tanggal, waktu_mulai, nomor_peserta)
+                VALUES ('{jenis_babak}', '{tanggal_mulai}', '{waktu_mulai}', {tim_1_no})
+            """)
+            row_count = query("""
+                INSERT INTO peserta_mengikuti_match (jenis_babak, tanggal, waktu_mulai, nomor_peserta)
+                VALUES ('{jenis_babak}', '{tanggal_mulai}', '{waktu_mulai}', {tim_2_no})
+            """)
+
+    
+        print("rows to insert")
+        return JsonResponse({
+            "data": "success",
+        })
+
+def save_stopwatch(request):
+    if request.method == 'POST':
+        elapsed_time = request.POST.get('elapsed_time')
+        # Save the elapsed_time value to the desired location (e.g., database)
+        response = {
+            'elapsed_time': elapsed_time
+        }
+        return JsonResponse(response)
+    
+def update_score(request):
+    if request.method == 'POST':
+        team = request.POST.get('team')
+        row = request.POST.get('row')
+        action = request.POST.get('action')
+
+        # Lakukan operasi sesuai aksi (tambah atau kurang) pada skor yang sesuai
+        # Misalnya, dapat menyimpan nilai skor dalam database atau variabel sesuai kebutuhan Anda
+
+        # Contoh: Simpan skor dalam session
+        session_key = f'score-team{team}-row{row}'
+        current_score = request.session.get(session_key, 0)
+        if action == 'plus':
+            current_score += 1
+        elif action == 'minus':
+            current_score -= 1
+        request.session[session_key] = current_score
+
+        response = {
+            'current_score': current_score
+        }
+        return JsonResponse(response)

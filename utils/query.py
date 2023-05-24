@@ -13,10 +13,10 @@ try:
                         port="6346",
                         database="railway")
     # connection = psycopg2.connect(user="postgres",
-    #                     password="postgres",
-    #                     host="localhost",
-    #                     port="5432",
-    #                     database="babadu")
+    #                     password="annisa123",
+    #                     host="127.0.0.1",
+    #                     port="5433",
+    #                     database="postgres")
 
     # Create a cursor to perform database operations
     connection.autocommit = True

@@ -16,17 +16,17 @@ def check_session(request):
 def get_role(email):
   is_umpire = query(f"SELECT M.ID FROM MEMBER M, UMPIRE U WHERE M.ID=U.ID AND M.Email='{email}'")
   if len(is_umpire) > 0:
-    return 'umpire'
+    return 'umpire', is_umpire[0]['id']
 
   is_pelatih = query(f"SELECT M.ID FROM MEMBER M, PELATIH P WHERE M.ID=P.ID AND M.Email='{email}'")
   if len(is_pelatih) > 0:
-    return 'pelatih'
+    return 'pelatih', is_pelatih[0]['id']
 
   is_atlet = query(f"SELECT M.ID FROM MEMBER M, ATLET A WHERE M.ID=A.ID AND M.Email='{email}'")
   if len(is_atlet) > 0:
-    return 'atlet'
+    return 'atlet', is_atlet[0]['id']
   else:
-    return ''
+    return '', ''
   
 def register(request):
   if request.method != 'POST':
@@ -47,7 +47,7 @@ def login(request):
     nama = request.POST['nama']
     email = request.POST['email']
 
-  role = get_role(email)
+  role, member_id = get_role(email)
   if not role:
     context = {'fail': True}
     return render(request, "login.html", context)
@@ -55,12 +55,13 @@ def login(request):
     request.session["nama"] = nama
     request.session["email"] = email
     request.session["role"] = role
+    request.session["member_id"] = str(member_id)
     request.session.set_expiry(0)
     request.session.modified = True
 
   # redirect to dashboard
   if role == 'umpire':
-    return redirect('/umpire') # path to change
+    return redirect('/umpire/live-score') # path to change
   elif role == 'pelatih':
     return redirect('/pelatih')
   else:
