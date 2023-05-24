@@ -50,6 +50,8 @@ def register_atlet(request):
         height = int(request.POST['height'])
         sex = str(request.POST['sex'])
 
+        # if play 
+
         isValid = id and nama and email and negara and tgl_lahir and play and height and sex
 
         if isValid:
