@@ -87,11 +87,13 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': BASE_DIR / 'db.sqlite3',
-        # 'NAME': 'babadu',
+
+        # ## yng ini
+        # 'NAME': 'postgres',
         # 'USER': 'postgres',
-        # 'PASSWORD': 'postgres',
-        # 'HOST': 'localhost',
-        # 'PORT': '5432',
+        # 'PASSWORD': 'annisa123',
+        # 'HOST': '127.0.0.1',
+        # 'PORT': '5433',
         # 'OPTIONS': {
         #     'options': '-c search_path=babadu',
         # }
