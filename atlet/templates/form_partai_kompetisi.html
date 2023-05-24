@@ -51,33 +51,70 @@
           <div class="table-wrap">
             <table class="table">
               <thead class="thead-primary">
-                <tr>
-                  <th>No</th>
-                  <th>Kategori</th>
-                  <th>Partner</th>
-                  <th>Kapasitas</th>
-                  <th></th>
-                </tr>
+                  <tr>
+                      <th>No.</th>
+                      <th>Kategori</th>
+                      <th>Partner</th>
+                      <th>Kapasitas</th>
+                      <th></th>
+                  </tr>
               </thead>
               <tbody>
-                {% for partai in list_partai %}
-                <tr>
-                  <th>{{ forloop.counter }}</th>
-                  <td>{{ partai.jenis_partai }}</td>
-                  <td>{{ partai.list_atlet }}</td>
-                  <td>{{ partai.kapasitas }}/{{ kapasitas_stadium }}</td>
-                  <td>
-                    <a href="">
-                      <button type="button" class="btn btn-primary">Join</button>
-                    </a>
-                  </td>
-                </tr>
-                {% endfor %}
+                  {% for item in list_partai %}
+                  <tr>
+                      <th scope="row">{{ forloop.counter }}</th>
+                      <td>{{ item.jenis_partai }}</td>
+                      <td>
+                        {% if item.list_atlet %}
+                          {% if item.list_atlet == '-' %}
+                              {{ item.list_atlet }}
+                          {% else %}
+                            <div class="btn-group">
+                              <button type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                  {{ item.list_atlet.0.nama }}
+                              </button>
+                              <div class="dropdown-menu">
+                                  {% for atlet in item.list_atlet %}
+                                      <a class="dropdown-item" href="#" data-value="{{ atlet.nama }}">{{ atlet.nama }}</a>
+                                  {% endfor %}
+                              </div>
+                            </div>                        
+                          {% endif %}
+                        {% else %}
+                            <!-- Handle case when list_atlet is empty -->
+                            <p>No partner available</p>
+                        {% endif %}
+                      </td>
+                      <td>
+                        {{ item.kapasitas}}/{{ kapasitas_stadium}}
+                      </td>
+                      <td>
+                        {% if item.joinable %}
+                            <a href="{% url 'atlet:join-event' %}?nama_stadium={{ result.nama_stadium|urlencode }}&nama_event={{ result.nama_event|urlencode }}&tahun={{ result.tahun|urlencode }}&jenis_partai={{ item.jenis_partai|urlencode }}&partner={{ atlet.nama|urlencode }}">
+                                <button type="button" class="btn btn-primary">Join</button>
+                            </a>
+                        {% endif %}
+                    </td>                    
+                  </tr>
+                  {% endfor %}
               </tbody>
-            </table>
+          </table>
+          
           </div>
         </div>
       </div>
     </div>
   </section>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+        $('.dropdown-item').on('click', function() {
+            var selectedValue = $(this).data('value');
+            console.log('Selected value:', selectedValue);
+        });
+    });
+</script>
+
+
 {% endblock content %}

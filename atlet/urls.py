@@ -1,5 +1,5 @@
 from django.urls import path
-from atlet.views import atletHome, daftarStadium, daftarEventStadium, daftarPartaiKompetisi
+from atlet.views import atletHome, daftarStadium, daftarEventStadium, daftarPartaiKompetisi, joinEvent
 
 app_name = 'atlet'
 
@@ -8,5 +8,6 @@ urlpatterns = [
     path('daftar-event/stadium', daftarStadium, name='daftar_stadium'),
     path('daftar-event/stadium/<str:namaStadium>', daftarEventStadium, name='daftar-event-stadium'),
     path('daftar-event/stadium/<str:namaStadium>/<str:namaEvent>/<str:tahunEvent>', daftarPartaiKompetisi, name='daftar-partai-kompetisi'),
+    path('join/', joinEvent, name='join-event'),
 
 ]
