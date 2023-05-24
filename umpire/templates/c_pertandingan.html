@@ -21,18 +21,18 @@
 {% block content %}
 
 <body>
-    {% include '/Users/annisaazzahra/Desktop/babadu/templates/navbar/navbar-umpire.html' %}
+    {% include 'navbar-umpire.html' %}
     {% csrf_token %}
     <br>
     <div class="container">
         <div class="row justify-content-center">
           <div class="col-md-6 text-center mb-5">
-            <h2 class="heading-section">Live Score Pertandingan</h2>
-            <h3>{{namaEvent}}</h3>
+            <h2 class="heading-section">Live Score Pertandingan {{namaEvent}}</h2>
             <h3>Partai {{jenisPartai}}</h3>
           </div>
         </div>
      </div>
+
     <div class="row justify-content-center" >
         <div class="col-sm-12 my-auto">
             <div class="card">
@@ -69,23 +69,23 @@
                                         <p>{{ pertandingan.tim_2.nama }}</p>
                                     </td>
                                     <td>
-                                        <button class="btn btn-outline-primary minus-btn" data-team="1" data-row="1">-</button>
-                                        <span class="score-text-tim1" id="score-team1-row-1" data-score="0">0</span>
-                                        <button class="btn btn-outline-primary plus-btn" data-team="1" data-row="1">+</button>
+                                        <button id="btn-dec-score-tim_1-{{forloop.counter0}}" onclick="changeScore('{{forloop.counter0}}', 'tim_1', 'decrement')" class="btn btn-outline-primary minus-btn" data-team="1" data-row="1">-</button>
+                                        <span id="score-tim_1-{{forloop.counter0}}" class="score-text-tim1" data-score="0">0</span>
+                                        <button id="btn-inc-score-tim_1-{{forloop.counter0}}" onclick="changeScore('{{forloop.counter0}}', 'tim_1', 'increment')" class="btn btn-outline-primary plus-btn" data-team="1" data-row="1">+</button>
                                     </td>
                     
                                     <!-- Example for team 2 -->
                                     <td>
-                                        <button class="btn btn-outline-primary minus-btn" data-team="2" data-row="1">-</button>
-                                        <span class="score-text-tim2" id="score-team2-row-1" data-score="0">0</span>
-                                        <button class="btn btn-outline-primary plus-btn" data-team="2" data-row="1">+</button>
+                                        <button id="btn-dec-score-tim_2-{{forloop.counter0}}" onclick="changeScore('{{forloop.counter0}}', 'tim_2', 'decrement')" class="btn btn-outline-primary minus-btn" data-team="2" data-row="1">-</button>
+                                        <span id="score-tim_2-{{forloop.counter0}}" class="score-text-tim2" data-score="0">0</span>
+                                        <button id="btn-inc-score-tim_2-{{forloop.counter0}}" onclick="changeScore('{{forloop.counter0}}', 'tim_2', 'increment')" class="btn btn-outline-primary plus-btn" data-team="2" data-row="1">+</button>
                                     </td>
                                 </tr>
                             {% endfor %}
                         </tbody>
                     </table>
 
-                    <button id="btnNext" class="btn btn-primary">next</button>
+                    <button id="btnNext" class="btn btn-primary">NEXT</button>
                 </div>
             </div>
         </div>
@@ -94,8 +94,30 @@
 
     {{ pertandingans|json_script:"data_pertandingan" }}
     <script>
+        const dataPertandingan = JSON.parse(document.getElementById('data_pertandingan').textContent)
+
+
+        function changeScore(idx, keyTim, operationType) {
+            const idxNum = parseInt(idx)
+            const pertandingan = dataPertandingan[idxNum]
+            const timPertandingan = pertandingan[keyTim]
+            const currentScoreEl = document.getElementById(`score-${keyTim}-${idxNum}`)
+            const currentScore = parseInt(currentScoreEl.textContent.trim())
+            let newScore = currentScore
+            if (operationType === 'decrement') {
+                if (currentScore > 0) {
+                    newScore--
+                    currentScoreEl.textContent = (currentScore - 1).toString()
+                }
+            } else {
+                newScore++
+                currentScoreEl.textContent = (currentScore + 1).toString()
+            }
+            timPertandingan.score = newScore
+        }
+
         $(document).ready(function() {
-            var startTime, elapsedTime = 0;
+            var startTime, elapsedTimeMinute = 0;
             var timerInterval;
 
             function startStopwatch() {
@@ -111,7 +133,8 @@
             }
 
             function stopStopwatch() {
-                elapsedTime = parseInt(Date.now() / 1000) - (startTime.getTime() / 1000)
+                const now = Date.now()
+                elapsedTimeMinute = (now - startTime.getTime()) / 60_000
                 clearInterval(timerInterval);
                 // saveStopwatch(elapsedTime);
             }
@@ -136,24 +159,22 @@
             }
 
             function saveStopwatch(time) {
-                const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-                
-                $.ajax({
-                    type: 'POST',
-                    url: "/umpire/save_stopwatch",
-                    headers: {'X-CSRFToken': csrftoken},
-                    data: {
-                        'elapsed_time': time
-                    },
-                    success: function(response) {
-                        console.log(response);
-                        // Lakukan tindakan setelah berhasil menyimpan stopwatch
-                    },
-                    error: function(xhr, textStatus, error) {
-                        console.log(xhr.responseText);
-                        // Lakukan tindakan jika terjadi kesalahan saat menyimpan stopwatch
-                    }
-                });
+            //     $.ajax({
+            //         type: 'POST',
+            //         url: "/umpire/save_stopwatch",
+            //         headers: {'X-CSRFToken': csrftoken},
+            //         data: {
+            //             'elapsed_time': time
+            //         },
+            //         success: function(response) {
+            //             console.log(response);
+            //             // Lakukan tindakan setelah berhasil menyimpan stopwatch
+            //         },
+            //         error: function(xhr, textStatus, error) {
+            //             console.log(xhr.responseText);
+            //             // Lakukan tindakan jika terjadi kesalahan saat menyimpan stopwatch
+            //         }
+            //     });
             }
 
             $("#startBtn").click(function() {
@@ -169,27 +190,41 @@
                 const padStart2 = (data) => data.toString().padStart(2, "0") 
                 const startDate = startTime.getFullYear() + "-" + padStart2(startTime.getMonth() + 1) + "-" + padStart2(startTime.getDate())
                 const startTimeOnly = padStart2(startTime.getHours()) + ":" + padStart2(startTime.getMinutes()) + ":" + padStart2(startTime.getSeconds())
-                const dataPertandingan = JSON.parse(document.getElementById('data_pertandingan').textContent)
+
+                for (let i = 0; i < dataPertandingan.length; i++) {
+                    const pertandingan = dataPertandingan[i]
+                    if ((pertandingan.tim_1?.score || 0) > (pertandingan.tim_2?.score || 0)) {
+                        pertandingan.tim_1.is_win = true
+                        pertandingan.tim_2.is_win = false
+                    } else {
+                        pertandingan.tim_2.is_win = true
+                        pertandingan.tim_1.is_win = false
+                    }
+                }
+
                 const dataPost = {
                         'tanggal_mulai': startDate,
                         'waktu_mulai': startTimeOnly,
                         'jenis_babak': '{{ jenisBabak }}',
-                        'data_pertandingan': dataPertandingan,
                         'nama_event': '{{ namaEvent }}',
+                        'tahun_event': '{{ tahun }}',
                         'jenis_partai': '{{ jenisPartai }}',
-                        'durasi': elapsedTime,
+                        'durasi': elapsedTimeMinute,
+                        'data_pertandingan': dataPertandingan,
                     };
-
-                console.log(dataPost)
 
                 $.ajax({
                     type: 'POST',
-                    url: "/umpire/start_stopwatch",
+                    url: "/umpire/save_match",
                     contentType: 'application/json; charset=utf-8',
                     headers: {'X-CSRFToken': csrftoken},
                     data: JSON.stringify(dataPost),
                     success: function(response) {
                         console.log(response);
+                        const nextBabak = response.next_babak;
+                        location.href = 
+                            `/umpire/live-score/${dataPost.nama_event}/${dataPost.jenis_partai}/${dataPost.tahun_event}?jenisBabak=${nextBabak}`
+
                         // Lakukan tindakan setelah berhasil menyimpan stopwatch
                     },
                     error: function(xhr, textStatus, error) {
@@ -199,57 +234,5 @@
                 });
             })
         });
-
-
-        $(document).ready(function() {
-        // Fungsi untuk mengubah skor tim
-        function changeScore(team, row, amount) {
-            var scoreElement = $("#score-" + team + "-row-" + row);
-            var currentScore = parseInt(scoreElement.data("score"));
-            var newScore = currentScore + amount;
-            scoreElement.text(newScore);
-            scoreElement.data("score", newScore);
-
-            // Kirim skor yang diperbarui ke server melalui AJAX
-            saveScore(team, row, newScore);
-        }
-
-        // Fungsi untuk menyimpan skor ke server melalui AJAX
-        function saveScore(team, row, score) {
-            $.ajax({
-                type: 'POST',
-                url: '/update_score/',
-                csrfmiddlewaretoken: '{{ csrf_token }}',
-                data: {
-                    'team': team,
-                    'row': row,
-                    'score': score
-                },
-                success: function(response) {
-                    console.log(response);
-                    // Lakukan tindakan setelah berhasil menyimpan skor
-                },
-                error: function(xhr, textStatus, error) {
-                    console.log(xhr.responseText);
-                    // Lakukan tindakan jika terjadi kesalahan saat menyimpan skor
-                }
-            });
-        }
-
-        // Handler untuk tombol plus
-        $(".plus-btn").click(function() {
-            var team = $(this).data("team");
-            var row = $(this).closest("tr").index() + 1;
-            changeScore(team, row, 1);
-        });
-
-        // Handler untuk tombol minus
-        $(".minus-btn").click(function() {
-            var team = $(this).data("team");
-            var row = $(this).closest("tr").index() + 1;
-            changeScore(team, row, -1);
-        });
-    });
-
     </script>
  {% endblock %}
