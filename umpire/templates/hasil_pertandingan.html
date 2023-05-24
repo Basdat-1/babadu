@@ -29,22 +29,30 @@
               </tr>
           </thead>
           <tbody>
+              {% if juara_1 %}
               <tr>
                   <td>Juara 1</td>
-                  <td>Tim A</td>
+                  <td>{{ juara_1 }}</td>
                 </tr>
+                {% endif %}
                 <tr>
+                  {% if juara_2 %}
                     <td>Juara 2</td>
-                    <td>Tim B</td>
+                    <td>{{ juara_2 }}</td>
                 </tr>
+                {% endif %}
+                {% if juara_2 %}
                 <tr>
                     <td>Juara 3</td>
-                    <td>Tim C</td>
+                    <td>{{ juara_3 }}</td>
                 </tr>
+                {% endif %}
+                {% if semifinal %}
                 <tr>
                   <td>Semifinal</td>
-                  <td>Tim C</td>
+                  <td>{{ semifinal }}</td>
               </tr>
+              {% endif %}
               <tr>
                   <td rowspan="4">Perempat Final</td>
                   <td>1</td>
@@ -61,7 +69,8 @@
              
           </tbody>
         </table>
-        {{juara_1}}
+        R32: {{r32}}<br>
+        R16: {{r16}}
       </div>
     </div>
   </div>

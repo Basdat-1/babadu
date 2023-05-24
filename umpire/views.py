@@ -85,6 +85,12 @@ def get_partai_kompetisi(request):
     }
     return render(request, "r_partai_kompetisi.html", context)
 
+def filter_peserta(lst, tahap):
+	return [d for d in lst if d["jenis_babak"]==tahap]
+
+def juara_1_3(lst, tahap, status):
+    return [d for d in lst if d["jenis_babak"]==tahap and d["status_menang"]==status]
+
 def get_hasil_pertandingan(request):
     nama_event = request.GET.get("nama_event")
     tahun = request.GET.get("tahun")
@@ -100,19 +106,29 @@ def get_hasil_pertandingan(request):
                         AND PK.Nama_event='{}'
                         AND PK.Tahun_event='{}';
                         """.format(jenis_partai, nama_event, tahun))[0]
-    juara_1 = query("""SELECT M1.nama AS nama_1, M2. nama AS nama_2, PM.jenis_babak, PM.status_menang
-                        FROM MEMBER M1, MEMBER M2, ATLET_KUALIFIKASI AK1, ATLET_KUALIFIKASI AK2, ATLET_GANDA AG, PESERTA_KOMPETISI PK,
+    
+    peserta = query("""SELECT M1.nama AS nama_1, M2. nama AS nama_2, PM.jenis_babak, PM.status_menang
+                        FROM MEMBER M1, MEMBER M2, ATLET_GANDA AG, PESERTA_KOMPETISI PK,
                         MATCH M, PESERTA_MENGIKUTI_MATCH PM
                         WHERE AG.ID_Atlet_Kualifikasi=M1.ID
                         AND AG.ID_Atlet_Kualifikasi_2=M2.ID
                         AND AG.ID_atlet_ganda=PK.ID_atlet_ganda
+				        AND PM.nomor_peserta=PK.nomor_peserta
                         AND M.jenis_babak=PM.jenis_babak
                         AND M.tanggal=PM.tanggal
                         AND M.waktu_mulai=PM.waktu_mulai
-				AND (status_menang='false' OR PM.jenis_babak='FINAL')
+                        AND (status_menang='false' OR PM.jenis_babak='FINAL')
                         AND M.nama_event='{}'
                         AND M.tahun_event='{}';
                     """.format(nama_event, tahun))
+    
+    r32 = filter_peserta(peserta, "R32")
+    r16 = filter_peserta(peserta, "R16")
+    perempat_final = filter_peserta(peserta, "PEREMPAT FINAL")
+    semifinal = filter_peserta(peserta, "SEMIFINAL")
+    juara_3 = juara_1_3(peserta, "JUARA 3", True)
+    juara_2 = juara_1_3(peserta, "FINAL", False)
+    juara_1 = juara_1_3(peserta, "FINAL", True)
     
     context = {
         "jenis_partai": info_partai["jenis_partai"],
@@ -123,7 +139,13 @@ def get_hasil_pertandingan(request):
         "tgl_mulai": info_partai["tgl_mulai"],
         "tgl_selesai": info_partai["tgl_selesai"],
         "kapasitas": info_partai["kapasitas"],
-        "juara_1": juara_1
+        "juara_1": juara_1,
+        "juara_2": juara_2,
+        "juara_3": juara_3,
+        "semifinal": semifinal,
+        "perempat_final": perempat_final,
+        "r16": r16,
+        "r32": r32
     }
     return render(request, "hasil_pertandingan.html", context)
 
