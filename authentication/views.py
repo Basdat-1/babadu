@@ -57,7 +57,7 @@ def login(request):
     request.session["nama"] = nama
     request.session["email"] = email
     request.session["role"] = role
-    request.session["member_id"] = member_id
+    request.session["member_id"] = str(member_id)
     request.session.set_expiry(0)
     request.session.modified = True
 
