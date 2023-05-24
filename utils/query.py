@@ -8,16 +8,20 @@ try:
     '''
     SETIAP MAU PUSH UNCOMMENT CONNECTION KE RAILWAY & COMMENT CONNECTION LOCAL
     '''
-    connection = psycopg2.connect(user="postgres",
-                        password='nYOB8Ak1NhmAPwuXlIHF',
-                        host="containers-us-west-109.railway.app",
-                        port="5930",
-                        database="railway")
     # connection = psycopg2.connect(user="postgres",
-    #                     password="postgres",
-    #                     host="localhost",
-    #                     port="5432",
-    #                     database="babadu")
+    #                     password='TBaCPVaBPEmMTXrJ1RDd',
+    #                     host="containers-us-west-2.railway.app",
+    #                     port="6346",
+    #                     database="railway")
+    connection = psycopg2.connect(user="postgres",
+                        password="postgres",
+                        host="localhost",
+                        port="5432",
+                        database="babadu")
+    #                     password="annisa123",
+    #                     host="127.0.0.1",
+    #                     port="5433",
+    #                     database="postgres")
 
     # Create a cursor to perform database operations
     connection.autocommit = True
