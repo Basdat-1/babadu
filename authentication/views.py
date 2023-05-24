@@ -1,3 +1,4 @@
+import uuid
 from django.shortcuts import render, redirect
 from utils.query import query
 from django.views.decorators.csrf import csrf_exempt
@@ -32,7 +33,39 @@ def get_role(email):
 def register(request):
   if request.method != 'POST':
     return render(request, 'register.html')
+  
+def register_atlet(request):
+  if request.method != 'POST':
+    return render(request, 'register-atlet.html')
+  
+@csrf_exempt
+def register_atlet(request):
+    if request.method == 'POST':
+        id = uuid.uuid4()
+        nama = str(request.POST['nama'])
+        email = str(request.POST['email'])
+        negara = str(request.POST['negara'])
+        tgl_lahir = str(request.POST['tgl_lahir'])
+        play = str(request.POST['play'])
+        height = int(request.POST['height'])
+        sex = str(request.POST['sex'])
 
+        isValid = id and nama and email and negara and tgl_lahir and play and height and sex
+
+        if isValid:
+            member = query(f"INSERT INTO MEMBER VALUES('{id}, {nama}', '{email}')")
+            print(member)
+            atlet = query(f"INSERT INTO ATLET VALUES('{id}', '{tgl_lahir}', '{negara}', '{play}', '{height}', NULL, '{sex}')")
+            print(atlet)
+            atlet_non_kualifikasi = query(f"INSERT INTO ATLET_NON_KUALIFIKASI VALUES('{id}')")
+            print(atlet_non_kualifikasi)
+
+            return redirect("/login")
+        else:
+            return render(request, 'register-atlet.html')
+    else:
+        return render(request, 'register-atlet.html')
+  
 @csrf_exempt
 def login(request):
   next = request.GET.get("next")
