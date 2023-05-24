@@ -100,6 +100,20 @@ def get_hasil_pertandingan(request):
                         AND PK.Nama_event='{}'
                         AND PK.Tahun_event='{}';
                         """.format(jenis_partai, nama_event, tahun))[0]
+    juara_1 = query("""SELECT M1.nama AS nama_1, M2. nama AS nama_2, PM.jenis_babak, PM.status_menang
+                        FROM MEMBER M1, MEMBER M2, ATLET_KUALIFIKASI AK1, ATLET_KUALIFIKASI AK2, ATLET_GANDA AG, PESERTA_KOMPETISI PK,
+                        MATCH M, PESERTA_MENGIKUTI_MATCH PM
+                        WHERE AG.ID_Atlet_Kualifikasi=M1.ID
+                        AND AG.ID_Atlet_Kualifikasi_2=M2.ID
+                        AND AG.ID_atlet_ganda=PK.ID_atlet_ganda
+                        AND M.jenis_babak=PM.jenis_babak
+                        AND M.tanggal=PM.tanggal
+                        AND M.waktu_mulai=PM.waktu_mulai
+				AND (status_menang='false' OR PM.jenis_babak='FINAL')
+                        AND M.nama_event='{}'
+                        AND M.tahun_event='{}';
+                    """.format(nama_event, tahun))
+    
     context = {
         "jenis_partai": info_partai["jenis_partai"],
         "nama_event": info_partai["nama_event"],
@@ -109,6 +123,7 @@ def get_hasil_pertandingan(request):
         "tgl_mulai": info_partai["tgl_mulai"],
         "tgl_selesai": info_partai["tgl_selesai"],
         "kapasitas": info_partai["kapasitas"],
+        "juara_1": juara_1
     }
     return render(request, "hasil_pertandingan.html", context)
 
