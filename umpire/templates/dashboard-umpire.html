@@ -1,12 +1,13 @@
-% extends 'base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block meta %}
-<title>Dashboard Atlet</title>
+<title>Dashboard Umpire</title>
 <link rel="stylesheet" href="{% static 'auth-dashboard/style.css' %}">
 {% endblock meta %}
 
 {% block content %}
+{% include "navbar-umpire.html" %}
 <div class="container m-5 text-center">
   <div class="title indigo mb-5">Dashboard</div>
   
@@ -15,21 +16,21 @@
         <td>
           Nama
         </td>
-        <td>: Dominique Thornally</td>
+        <td>: {{ nama }}</td>
       </tr>
 
       <tr>
         <td>
           Negara
         </td> 
-        <td>: Australia</td>
+        <td>: {{ negara }}</td>
       </tr>
 
       <tr>
         <td>
           Email
         </td>
-        <td>: dthornally0@stanford.edu</td>
+        <td>: {{ email }}</td>
       </tr>
 
     </table>

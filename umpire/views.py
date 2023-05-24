@@ -1,12 +1,21 @@
 from django.shortcuts import render
 from utils.query import query
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.decorators import login_required
 
 # Create your views here.
-@login_required
 def dashboard_umpire(request):
-    return
+    nama = request.session["nama"]
+    email = request.session["email"]
+    negara = query("""SELECT negara FROM MEMBER M, UMPIRE U WHERE M.ID=U.ID AND 
+                    M.nama='{}' AND M.email='{}';
+                    """.format(nama, email))[0]["negara"]
+    
+    context = {
+        "nama": nama,
+        "email": email,
+        "negara": negara
+    }
+    return render(request, 'dashboard-umpire.html', context)
 
 
 # @login_required

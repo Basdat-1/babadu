@@ -34,6 +34,7 @@ def register(request):
 
 @csrf_exempt
 def login(request):
+  next = request.GET.get("next")
   if request.method != "POST":
     return login_view(request)
 
@@ -58,13 +59,16 @@ def login(request):
     request.session.set_expiry(0)
     request.session.modified = True
 
-  # redirect to dashboard
-  if role == 'umpire':
-    return redirect('/umpire') # path to change
-  elif role == 'pelatih':
-    return redirect('/pelatih')
-  else:
-    return redirect('/atlet')
+    if next != None and next != "None":
+      return redirect(next)
+    else:
+      # redirect to dashboard
+      if role == 'umpire':
+        return redirect('/umpire')
+      elif role == 'pelatih':
+        return redirect('/pelatih')
+      else:
+        return redirect('/atlet')
 
 def login_view(request):
   return render(request, "login.html")
