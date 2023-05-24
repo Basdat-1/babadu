@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from utils.query import query
 import string
+from django.views.decorators.csrf import csrf_exempt
+
 
 # Create your views here.
 
@@ -107,3 +109,39 @@ def daftarEventStadium(request, namaStadium):
     context = {'list_event': result,
                'kapasitas': kapasitas,}
     return render(request, 'stadium_event.html', context)
+
+@csrf_exempt
+def c_sponsor(request):
+    if request.method != 'POST':
+        return r_sponsor(request, False)
+    nama_sponsor = request.POST.get("nama_sponsor")
+    if not nama_sponsor:
+        return r_sponsor(request, True)        
+    nama_atlet = request.session["nama"]
+    
+    id_atlet = str(query(f"SELECT A.ID FROM MEMBER M, ATLET_SPONSOR ASP, ATLET A WHERE M.ID=A.ID AND A.ID = ASP.ID AND M.Nama='{nama_atlet}';")[0]["id"])
+    id_sponsor = str(query(f"SELECT S.ID FROM SPONSOR S, ATLET A, ATLET_SPONSOR ASP WHERE S.ID=ASP.ID_SPONSOR AND A.ID = ASP.ID_ATLET AND S.nama_brand ='{nama_sponsor}';")[0]["id"])
+
+    query(f"INSERT INTO SPONSOR VALUES ('{id_atlet}', '{id_sponsor}');")
+    return redirect('/atlet/list-atlet')
+
+def r_sponsor(request, fail):
+    list_sponsor = query("SELECT S.nama_brand, ASP.tgl_mulai, ASP.tgl_selesai FROM SPONSOR S, ATLET_SPONSOR ASP WHERE S.id = ASP.id_sponsor;")
+    context = {
+        "list_sponsor": list_sponsor,
+        "fail": False
+    }
+
+    if fail:
+        context["fail"] = True
+    return render(request, "c_sponsor.html", context)
+
+def list_sponsor(request):
+    nama_atlet = request.session["nama"]
+    isi_table_sponsor = query("""SELECT S.nama_brand, ASP.tgl_mulai, ASP.tgl_selesai FROM ATLET A, SPONSOR S, ATLET_SPONSOR ASP WHERE S.id = ASP.id_sponsor, 
+                        AND A.ID = ASP.ID AND AND A.Nama='{}';
+                        """.format(nama_atlet))
+    context = {
+        "isi_table_sponsor": isi_table_sponsor
+    }
+    return render(request, "list_sponsor.html", context)

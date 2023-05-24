@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>List Atlet</title>
+<link rel="stylesheet" href="{% static 'pelatih/style.css' %}">
+{% endblock meta %}
+
+{% block content %}
+{% include '/Users/mac/Desktop/babadu/templates/navbar/navbar-atlet.html' %}
+<section class="ftco-section m-5">
+  <div class="container">
+    <div class="row justify-content-center">
+        <h2 class="heading-section">List Sponsor</h2>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table-wrap">
+          <table class="table">
+            <thead class="thead-primary">
+              <tr>
+                <th>Nama Sponsor</th>
+                <th>Tanggal Mulai</th>
+                <th>Tanggal Selesai</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for sponsor in isi_table_sponsor %}
+              <tr>
+                <td>{{ sponsor.nama_brand }}</td>
+                <td>{{ atlet_sponsor.tgl_mulai }}</td>
+                <td>{{ atlet_sponsor.tgl_selesai }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock content %}

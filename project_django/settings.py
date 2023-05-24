@@ -84,9 +84,16 @@ WSGI_APPLICATION = 'project_django.wsgi.application'
 
 '''SETIAP MAU PUSH UNCOMMENT NAME BASE DIR & COMMENT CONFIG LOCAL'''
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+       'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'OPTIONS': {
+            'options': '-c search_path=babadu'
+        },
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'd2002ina',
+        'HOST': 'localhost',
+        'PORT': '5432' 
     }
 }
 
