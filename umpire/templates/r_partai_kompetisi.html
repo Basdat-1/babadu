@@ -45,7 +45,7 @@
                 <td>{{ partai.jumlah_peserta }}/{{ partai.kapasitas }}</td>
                 <td>
                   {% if partai.jumlah_peserta == partai.kapasitas %}
-                    <a href="/umpire/live-score/{{ partai.nama_event }}/{{ partai.jenis_partai }}">
+                    <a href="/umpire/live-score/{{ partai.nama_event }}/{{ partai.jenis_partai }}/{{ partai.tahun }}">
                       <button type="button" class="btn btn-primary" id="mulai">Mulai</button>
                     </a>
                   {% endif %}

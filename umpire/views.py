@@ -1,10 +1,14 @@
 import string
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from utils.query import query
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 import json
+from django.db import transaction
+
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
+
 
 # Create your views here.
 def dashboard_umpire(request):
@@ -133,15 +137,47 @@ def get_member_tunggal(id_kualifikasi):
 
     return data_member
 
-def c_pertandingan(request, namaEvent, jenisPartai):
-    
-    pesertas = query(f"""
-        SELECT pk.*
-        FROM peserta_kompetisi AS pk
-        INNER JOIN partai_peserta_kompetisi AS ppk
-        ON pk.nomor_peserta = ppk.nomor_peserta
-        WHERE ppk.jenis_partai = '{jenisPartai}' AND ppk.nama_event = '{namaEvent}'
-    """)
+mapPreviousMatchBabak = {
+    'R2': 'R4',
+    'R4': 'R8',
+    'R8': 'R16',
+    'R16': 'R32',
+    'R32': '',
+}
+
+mapNextMatchBabak = {
+    'R2': 'R1',
+    'R4': 'R2',
+    'R8': 'R4',
+    'R16': 'R8',
+    'R32': 'R16',
+}
+
+
+def c_pertandingan(request, namaEvent, jenisPartai, tahun):
+    jenisBabak = request.GET.get("jenisBabak")
+
+    if jenisBabak is None:
+        pesertas = query(f"""
+            SELECT pk.* 
+            FROM peserta_kompetisi AS pk
+            INNER JOIN partai_peserta_kompetisi AS ppk
+            ON pk.nomor_peserta = ppk.nomor_peserta
+            WHERE ppk.jenis_partai = '{jenisPartai}' AND ppk.nama_event = '{namaEvent}' AND ppk.tahun_event = '{tahun}'
+        """)
+    else:
+        prevJenisBabak = mapPreviousMatchBabak[jenisBabak]
+        pesertas = query(f"""
+            SELECT pk.*
+            FROM partai_peserta_kompetisi ppk 
+            INNER JOIN peserta_kompetisi pk ON pk.nomor_peserta = ppk.nomor_peserta
+            INNER JOIN peserta_mengikuti_match pmm ON pmm.nomor_peserta = ppk.nomor_peserta
+            WHERE ppk.nama_event = '{namaEvent}' AND ppk.jenis_partai = '{jenisPartai}' AND ppk.tahun_event = '{tahun}'
+            AND pmm.jenis_babak = '{prevJenisBabak}' AND status_menang IS TRUE
+        """)
+        print('prev : ')
+        print(prevJenisBabak)
+        print(pesertas)
 
     pertandingans = []
     jumlah_pertandingan = len(pesertas) // 2
@@ -156,6 +192,7 @@ def c_pertandingan(request, namaEvent, jenisPartai):
             'tim_1': tim_1,
             'tim_2': tim_2
         }
+
 
         if tim_1['id_atlet_ganda'] != None:
             member_ganda_1 = get_member_ganda(tim_1['id_atlet_ganda'])
@@ -190,13 +227,14 @@ def c_pertandingan(request, namaEvent, jenisPartai):
         jenisPertandingan = "R16"
         jenisBabak = "R16"
     elif total_peserta_real == 8:
-        jenisPertandingan = "Perempat Final"
+        jenisPertandingan = "PEREMPAT FINAL"
         jenisBabak = "R8"
     elif total_peserta_real == 4:
-        jenisPertandingan = "Semi Final"
+        jenisPertandingan = "SEMIFINAL"
         jenisBabak = "R4"
     elif total_peserta_real == 2:
-        jenisPertandingan = "Final"
+        # perlu dibikin case untuk perebutan juara 3 = JUARA3
+        jenisPertandingan = "FINAL"
         jenisBabak = "R2"
     else:
         jenisPertandingan = ""
@@ -205,12 +243,12 @@ def c_pertandingan(request, namaEvent, jenisPartai):
     context = {
         'pertandingans': pertandingans,
         'namaEvent' : namaEvent,
+        'tahun': tahun,
         'jenis_pertandingan': jenisPertandingan,
         'jenisPartai' : jenisPartai,
         'jenisBabak': jenisBabak,
         'total_peserta_real' : total_peserta_real
     }
-    
     return render(request, 'c_pertandingan.html', context)
 
 def get_datetime(request):
@@ -228,6 +266,7 @@ def get_datetime(request):
         print(response)
         return JsonResponse(response)
 
+@csrf_exempt
 def save_match(request):
     if request.method == 'POST':
         request_body = json.loads(request.body)
@@ -235,63 +274,78 @@ def save_match(request):
         tanggal_mulai = request_body['tanggal_mulai']
         waktu_mulai = request_body['waktu_mulai']
         jenis_babak = request_body['jenis_babak']
+        jenis_partai = request_body['jenis_partai']
         nama_event = request_body['nama_event']
+        tahun_event = request_body['tahun_event']
         durasi = request_body['durasi']
         data_pertandingan = request_body['data_pertandingan']
 
         umpire_id = request.session['member_id']
-        events = query(f"""
-            SELECT * FROM event as e WHERE e.nama_event = '{nama_event}' LIMIT 1
-        """)
-        if len(events) == 0:
-            return JsonResponse({
-                "message": "event tidak ditemukan"
-            }, status=400)
-        
-        event = events[0]
-        tahun_event = event['tahun']
 
-        row_count = query(f"""
-            INSERT INTO match (jenis_babak, tanggal, waktu_mulai, nama_event, tahun_event, id_umpire, total_durasi) 
-            VALUES 
-            ('{jenis_babak}', '{tanggal_mulai}', '{waktu_mulai}', 
-            '{nama_event}', {tahun_event}, '{umpire_id}', {durasi}) 
-        """)
+        with transaction.atomic():
+            row_count = query(f"""
+                INSERT INTO match (jenis_babak, tanggal, waktu_mulai, nama_event, tahun_event, id_umpire, total_durasi) 
+                VALUES 
+                ('{jenis_babak}', '{tanggal_mulai}', '{waktu_mulai}', 
+                '{nama_event}', {tahun_event}, '{umpire_id}', {durasi}) 
+            """)
 
-        if (isinstance(row_count, int) and row_count <= 0) or not isinstance(row_count, int):
-            print("error")
-            print(row_count)
-            return JsonResponse({
-                "message": "Gagal insert match",
-            }, status=400)
+            if (isinstance(row_count, int) and row_count <= 0) or not isinstance(row_count, int):
+                print("error")
+                print(row_count)
+                raise Exception("failed insert to match")
+                return JsonResponse({
+                    "message": "Gagal insert match",
+                }, status=400)
 
 
-        for i in data_pertandingan:
-            # jenis_babak
-            # tanggal
-            # waktu_mulai
-            # total_durasi
-            # nama_event
-            # tahun_event
-            # id_umpire
-            print(i)
+            for i in data_pertandingan:
+                # jenis_babak
+                # tanggal
+                # waktu_mulai
+                # total_durasi
+                # nama_event
+                # tahun_event
+                # id_umpire
+                # print(i)
 
-            tim_1_no = i['tim_1']['nomor_peserta']
-            tim_2_no = i['tim_2']['nomor_peserta']
+                tim_1_no = i['tim_1']['nomor_peserta']
+                tim_2_no = i['tim_2']['nomor_peserta']
+                tim_1_win = i['tim_1']['is_win']
+                tim_2_win = i['tim_2']['is_win']
+                
+                print("test here")
+                row_count = query(f"""
+                    INSERT INTO peserta_mengikuti_match (jenis_babak, tanggal, waktu_mulai, nomor_peserta, status_menang)
+                    VALUES ('{jenis_babak}', '{tanggal_mulai}', '{waktu_mulai}', {tim_1_no}, {tim_1_win})
+                """)
+                
+                if (isinstance(row_count, int) and row_count <= 0) or not isinstance(row_count, int):
+                    print("error")
+                    print(row_count)
+                    raise Exception("error insert tim 1 data")
+                    return JsonResponse({
+                        "message": "Gagal insert match tim 1",
+                    }, status=400)
             
-            row_count = query("""
-                INSERT INTO peserta_mengikuti_match (jenis_babak, tanggal, waktu_mulai, nomor_peserta)
-                VALUES ('{jenis_babak}', '{tanggal_mulai}', '{waktu_mulai}', {tim_1_no})
-            """)
-            row_count = query("""
-                INSERT INTO peserta_mengikuti_match (jenis_babak, tanggal, waktu_mulai, nomor_peserta)
-                VALUES ('{jenis_babak}', '{tanggal_mulai}', '{waktu_mulai}', {tim_2_no})
-            """)
+                row_count = query(f"""
+                    INSERT INTO peserta_mengikuti_match (jenis_babak, tanggal, waktu_mulai, nomor_peserta, status_menang)
+                    VALUES ('{jenis_babak}', '{tanggal_mulai}', '{waktu_mulai}', {tim_2_no}, {tim_2_win})
+                """)
+
+                
+                if (isinstance(row_count, int) and row_count <= 0) or not isinstance(row_count, int):
+                    print("error")
+                    print(row_count)
+                    raise Exception("error insert tim 2 data")
+                    return JsonResponse({
+                        "message": "Gagal insert match tim 2",
+                    }, status=400)
 
     
-        print("rows to insert")
+        nextBabak = mapNextMatchBabak[jenis_babak]
         return JsonResponse({
-            "data": "success",
+            "next_babak": nextBabak,
         })
 
 def save_stopwatch(request):
