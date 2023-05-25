@@ -182,7 +182,7 @@ def login_view(request):
 
 def logout(request):
   if not check_session(request):
-    return redirect('login/')
+    return redirect('/login')
   request.session.flush()
   request.session.clear_expired()
   return redirect('/')

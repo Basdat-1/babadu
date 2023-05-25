@@ -65,7 +65,7 @@
               {% endif %}
               {% if perempat_final %}
               <tr>
-                  <td rowspan="4">Perempat Final</td>
+                  <td rowspan="{{ perempat_final | length }}">Perempat Final</td>
                   <td>{{ perempat_final.0.nama1 }}</td>
                   <td>{{ perempat_final.0.nama2 }}</td>
               </tr>
@@ -76,9 +76,9 @@
               </tr>
               {% endfor %}
             {% endif %}
-            {% if jumlah_peserta > 8 %}
+            <!-- {% if jumlah_peserta > 8 %} -->
               <tr>
-                  <td rowspan="4">R16</td>
+                  <td rowspan="{{ r16 | length }}">R16</td>
                   <td>{{ r16.0.nama1 }}</td>
                   <td>{{ r16.0.nama2 }}</td>
               </tr>
@@ -91,7 +91,7 @@
             {% endif %}
             {% if jumlah_peserta > 16 %}
               <tr>
-                  <td rowspan="4">R32</td>
+                  <td rowspan="{{ r32 | length }}">R32</td>
                   <td>{{ r32.0.nama1 }}</td>
                   <td>{{ r32.0.nama2 }}</td>
               </tr>
