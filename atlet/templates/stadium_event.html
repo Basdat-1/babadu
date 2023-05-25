@@ -1,5 +1,12 @@
-{% extends 'base.html' %}
-{% load static %}
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Babadu</title>
+  <link rel="icon" type="image/x-icon" href="https://cdn.discordapp.com/attachments/952995624951873608/1104356055129018468/17898105.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"><link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css'>
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.css'><link rel="stylesheet" href="/Users/annisaazzahra/Desktop/babadu/templates/navbar/style.css">
 
 {% block meta %}
 <title>Stadium Event</title>
@@ -15,9 +22,9 @@
         <h2 class="heading-section">Daftarkan Dirimu ke Pertandingan Menarik!</h2>
         <h3 class="heading-section">Pilih Event di Stadium Gelora Bung Karno</h3>
         
-        <!-- <a href="/Users/annisaazzahra/Desktop/babadu/templates/cru_daftar_event_atlet_stadium.html">
+        <a href="/Users/annisaazzahra/Desktop/babadu/templates/cru_daftar_event_atlet_stadium.html">
           <button type="button" class="btn btn-outline-primary">< Kembali ke Daftar Stadium</button>
-        </a> -->
+        </a>
       </div>
     </div>
     <div class="row">
@@ -35,7 +42,6 @@
               </tr>
             </thead>
             <tbody>
-              {% for event in list_event %}
               <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{ event.nama_event }}</td>
@@ -48,7 +54,17 @@
                   </a>
                 </td>
               </tr>
-              {% endfor %}
+
+              <tr>
+                <th scope="row">2</th>
+                <td>Event B</td>
+                <td>Rp4.000.000</td>
+                <td>27-07-2023</td>
+                <td>S300</td>
+                <td>8/8</td>
+                <td></td>
+              </tr>
+
             </tbody>
           </table>
         </div>
@@ -56,4 +72,11 @@
     </div>
   </div>
 </section>
-{% endblock content %}
+
+
+
+
+
+</body>
+</html>
+

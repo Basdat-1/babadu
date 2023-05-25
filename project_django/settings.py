@@ -98,6 +98,16 @@ DATABASES = {
         # 'OPTIONS': {
         #     'options': '-c search_path=babadu',
         # }
+        # 'default': {
+        # 'ENGINE': 'django.db.backends.postgresql',
+        # 'OPTIONS': {
+        #     'options': '-c search_path=babadu'
+        # },
+        # 'NAME': 'postgres',
+        # 'USER': 'postgres',
+        # 'PASSWORD': 'd2002ina',
+        # 'HOST': 'localhost',
+        # 'PORT': '5432'
     }
 }
 

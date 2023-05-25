@@ -11,4 +11,5 @@ urlpatterns = [
     path('register-pelatih/', register_pelatih, name='register-pelatih'),
     path('register-umpire/', register_umpire, name='register-umpire'),
     path('logout/', logout, name='logout')
+    
 ]
