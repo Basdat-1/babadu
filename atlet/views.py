@@ -14,6 +14,8 @@ def atletHome(request):
 
     result = query(f"""SELECT * FROM ATLET A
                     WHERE A.id = '{id}'""")[0]
+    
+    print(result)
 
     pelatih = query("""SELECT * FROM ATLET_PELATIH AP 
                     JOIN MEMBER M ON M.id = AP.id_pelatih
