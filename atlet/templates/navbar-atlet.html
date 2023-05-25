@@ -1,4 +1,7 @@
-
+{% load static %}
+<script src="{% static 'navbar/script.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="{% static 'navbar/style.css' %}">
 
 
 <nav class="navbar justify-content-between" style="background-color:#5161ce" >
@@ -35,9 +38,10 @@
                     Event
                 </a>
                 <div class="dropdown-menu dropdown-menu-end">
-                    <a href="#" class="dropdown-item">Daftar Event</a>
+                    <a href="{% url 'atlet:enrolled_partai_kompetisi' %}" class="dropdown-item">Enrolled Partai Kompetisi Event</a>
                     <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item">Enrolled Event</a>
+                    <a href="{% url 'atlet:enrolled_event' %}" class="dropdown-item">Enrolled Event</a>
+                    
                 </div>
             </li>
 
@@ -47,9 +51,9 @@
                     Sponsor
                 </a>
                 <div class="dropdown-menu dropdown-menu-end">
-                    <a href="{% url 'authentication: c_sponsor' %}" class="dropdown-item">Daftar Sponsor</a>
+                    <a href="{% url 'atlet:c_sponsor' %}" class="dropdown-item">Daftar Sponsor</a>
                     <div class="dropdown-divider"></div>
-                    <a href="{% url 'authentication: list_sponsor' %}" class="dropdown-item">List Sponsor</a>
+                    <a href="{% url 'atlet:list_sponsor' %}" class="dropdown-item">List Sponsor</a>
                 </div>
             </li>
         </ul>
@@ -63,4 +67,3 @@
     </button>
 
   </nav>
-

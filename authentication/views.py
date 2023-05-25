@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from utils.query import query
 from django.views.decorators.csrf import csrf_exempt
-
+import uuid
 def index(request):
     return render(request, 'index.html')
 
@@ -57,7 +57,7 @@ def login(request):
     request.session["nama"] = nama
     request.session["email"] = email
     request.session["role"] = role
-    request.session["member_id"] = member_id
+    request.session["member_id"] = str(member_id)
     request.session.set_expiry(0)
     request.session.modified = True
 

@@ -1,134 +1,78 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Babadu</title>
-  <link rel="icon" type="image/x-icon" href="https://cdn.discordapp.com/attachments/952995624951873608/1104356055129018468/17898105.png">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css'>
-<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.css'>
-<link rel="stylesheet" href="\style.css">
+{% extends 'base.html' %}
+{% load static %}
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-</head>
-<body>
+{% block content %}
+{% include "navbar-atlet.html" %}
 
-
-<nav class="navbar justify-content-between" style="background-color:#5161ce" >
-    <!-- Navbar content -->
-    <div class="m-4">
-        <ul class="nav nav-pills">
-            <li>
-                <a  href="#">
-                    <img src="https://cdn.discordapp.com/attachments/1033777915013386362/1109367141410541598/Frame_1.png" alt="" height="36" >
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="javascript:void(0);"><i class="fas fa-tachometer-alt"></i>
-                    Dashboard
-                </a>
-            </li>
-
-            <li class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                    <i class="fa fa-book"></i>
-                    Ujian Kualifikasi
-                </a>
-                <div class="dropdown-menu">
-                    <a href="#" class="dropdown-item">List Ujian Kualifikasi</a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item">Riwayat Ujian Kualifikasi</a>
-                </div>
-            </li>
-
-            <li class="nav-item dropdown ms-auto">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                    <i class="fa fa-calendar"></i>
-                    Event
-                </a>
-                <div class="dropdown-menu dropdown-menu-end">
-                    <a href="#" class="dropdown-item">Daftar Event</a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item">Enrolled Event</a>
-                </div>
-            </li>
-
-            <li class="nav-item dropdown ms-auto">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                    <i class="far fa-building" aria-hidden="true"></i>
-                    Sponsor
-                </a>
-                <div class="dropdown-menu dropdown-menu-end">
-                    <a href="#" class="dropdown-item">Daftar Sponsor</a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item">List Sponsor</a>
-                </div>
-            </li>
-        </ul>
-    </div>
-
-    <button type="button" class="btn btn-danger">
-        <a href="#" style="color:white">
-            <i class="fas fa-sign-out-alt"></i>
-            Log Out
-        </a>
-    </button>
-
-  </nav>
-</body>
-</html>
 <!-- partial -->
 <script src='https://code.jquery.com/jquery-3.4.1.min.js'></script>
 <script src='https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js'></script>
 <script src='https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js'></script>
-<script  src="/Users/annisaazzahra/Desktop/babadu/templates/navbar/script.js"></script>
+<!-- <script src="/Users/annisaazzahra/Desktop/babadu/templates/navbar/script.js"></script> -->
 
-<br>
-<br>
 
-<div class="row justify-content-center">
-    <div class="col-md-6 text-center mb-5">
-      <h2 class="heading-section">Enrolled Event</h2>
-
-    </div>
+<
+{% if message %}
+<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+    <span class="block sm:inline">{{ message }}</span>
 </div>
-
-<div class="row">
-    <div class="col-sm-6">
-      <div class="card">
-        <div class="card-body">
-          <b><h5 class="card-title"><b>Indonesia Open</h5></b>
-          <p class="card-text">Stadium: Gelora Bung Karno</p>
-          <p class="card-text">Hadiah: Rp5.000.000</p>
-          <p class="card-text">Kategori Superseries: S200</p>
-          <p class="card-text">Kategori Spesialiasi: Tunggal Putra</p>
-          <p class="card-text">Tanggal Mulai: 13/06/2023</p>
-          <p class="card-text">Tanggal Selesai: 13/06/2023</p>
-          <p class="card-text">Kapasitas: 8/8</p>
-          <button type="button" class="btn btn-outline-danger">Unenroll</button>
+{% endif %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center mb-4">
+             <h2 class="heading-section">Enrolled Events</h2>
         </div>
-      </div>
     </div>
-    
-    
-    <div class="col">
-      <div class="card">
-        <div class="card-body">
-            <b><h5 class="card-title"><b>Yonex Canada Open</h5></b>
-            <p class="card-text">Stadium: McMahon Stadium</p>
-            <p class="card-text">Hadiah: Rp4.200.000</p>
-            <p class="card-text">Kategori Superseries: S300</p>
-            <p class="card-text">Kategori Spesialiasi: Tunggal Putra</p>
-            <p class="card-text">Tanggal Mulai: 04/07/2023</p>
-            <p class="card-text">Tanggal Selesai: 09/07/2023</p>
-            <p class="card-text">Kapasitas: 8/8</p>
-            <button type="button" class="btn btn-outline-danger">Unenroll</button>
-        </div>
+  <div class="card">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Event</th>
+              <th>Stadium</th>
+              <th>Kategori Superseries </th>
+              <th>Tanggal Mulai</th>
+              <th>Tanggal Selesai</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for data in list_event %}
+            <form method="POST" action="">
+                {% csrf_token %}
+                <tr>
+                  <input
+                    type="hidden"
+                    name="nama_event"
+                    value="{{data.nama_event}}"
+                  />
+                  <input
+                    type="hidden"
+                    name="nomor_peserta"
+                    value="{{data.nomor_peserta}}"
+                  />
+                  <input type="hidden" name="tahun" value="{{data.tahun}}" />      
+                    <td>{{ data.nama_event }}</td>
+                    <td>{{ data.nama_stadium }}</td>
+                    <td>{{ data.kategori_superseries }}</td>
+                    <td>{{ data.tgl_mulai }}</td>
+                    <td>{{ data.tgl_selesai }}</td>
+                    <td>
+                        <input
+                          class="btn btn-primary" type="submit" value="Unenroll"
+                        />
+                    </td>
+                </tr>
+            </form>
+          {% endfor %}
+        </tbody>
+        </table>
       </div>
     </div>
   </div>
+</div>
 
-</body>
-</html>
+
+
+{% endblock content %}
