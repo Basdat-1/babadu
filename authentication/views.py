@@ -47,8 +47,8 @@ def register_atlet(request):
         nama = str(request.POST['nama'])
         email = str(request.POST['email'])
         negara = str(request.POST['negara'])
-        tgl_lahir = str(request.POST['tgl_lahir'])
-        play = str(request.POST['play'])
+        tgl_lahir = request.POST['tgl_lahir']
+        play = request.POST["play"]
         height = int(request.POST['height'])
         sex = str(request.POST['sex'])
 
