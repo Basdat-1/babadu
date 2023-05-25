@@ -111,7 +111,9 @@ def get_hasil_pertandingan(request):
                         AND PK.Tahun_event='{}';
                         """.format(jenis_partai, nama_event, tahun))[0]
     
-    peserta = query("""SELECT M1.nama AS nama_1, M2. nama AS nama_2, PM.jenis_babak, PM.status_menang
+    partai_ganda = ['MD', 'XD', 'WD']
+    if jenis_partai in partai_ganda:
+        peserta = query("""SELECT M1.nama AS nama1, M2. nama AS nama2, PM.jenis_babak, PM.status_menang
                         FROM MEMBER M1, MEMBER M2, ATLET_GANDA AG, PESERTA_KOMPETISI PK,
                         MATCH M, PESERTA_MENGIKUTI_MATCH PM
                         WHERE AG.ID_Atlet_Kualifikasi=M1.ID
@@ -125,6 +127,21 @@ def get_hasil_pertandingan(request):
                         AND M.nama_event='{}'
                         AND M.tahun_event='{}';
                     """.format(nama_event, tahun))
+        
+    else:
+        peserta = query("""SELECT ME.nama AS nama1, PM.jenis_babak, PM.status_menang
+                        FROM MEMBER ME, PESERTA_KOMPETISI PK,
+                        MATCH M, PESERTA_MENGIKUTI_MATCH PM
+                        WHERE PM.nomor_peserta=PK.nomor_peserta
+                        AND M.jenis_babak=PM.jenis_babak
+                        AND M.tanggal=PM.tanggal
+                        AND M.waktu_mulai=PM.waktu_mulai
+                        AND PK.ID_ATLET_KUALIFIKASI=ME.ID
+                        AND (status_menang='false' OR PM.jenis_babak='FINAL')
+                        AND M.nama_event='{}'
+                        AND M.tahun_event='{}';
+                    """.format(nama_event, tahun))
+                    
     
     r32 = filter_peserta(peserta, "R32")
     r16 = filter_peserta(peserta, "R16")
@@ -149,7 +166,9 @@ def get_hasil_pertandingan(request):
         "semifinal": semifinal,
         "perempat_final": perempat_final,
         "r16": r16,
-        "r32": r32
+        "r32": r32,
+        "jumlah_peserta": len(peserta),
+        "partai_ganda": partai_ganda 
     }
     return render(request, "hasil_pertandingan.html", context)
 

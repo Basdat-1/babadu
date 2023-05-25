@@ -25,52 +25,85 @@
           <thead>
               <tr>
                   <th>Tahap</th>
-                  <th>Nama Tim</th>
+                  {% if jenis_partai in partai_ganda%}
+                    <th>Nama Atlet 1</th>
+                    <th>Nama Atlet 2</th>
+                  {% else %}
+                    <th>Nama Atlet</th>
+                  {% endif %}
+
               </tr>
           </thead>
           <tbody>
               {% if juara_1 %}
               <tr>
                   <td>Juara 1</td>
-                  <td>{{ juara_1 }}</td>
+                  <td>{{ juara_1.nama1 }}</td>  
+                  <td>{{ juara_1.nama2 }}</td>  
                 </tr>
                 {% endif %}
                 <tr>
                   {% if juara_2 %}
                     <td>Juara 2</td>
-                    <td>{{ juara_2 }}</td>
+                    <td>{{ juara_2.nama1 }}</td>
+                    <td>{{ juara_2.nama2 }}</td>
                 </tr>
                 {% endif %}
                 {% if juara_2 %}
                 <tr>
                     <td>Juara 3</td>
-                    <td>{{ juara_3 }}</td>
+                    <td>{{ juara_3.nama1 }}</td>
+                    <td>{{ juara_3.nama2 }}</td>
                 </tr>
                 {% endif %}
                 {% if semifinal %}
                 <tr>
                   <td>Semifinal</td>
-                  <td>{{ semifinal }}</td>
+                  <td>{{ semifinal.nama1 }}</td>
+                  <td>{{ semifinal.nama2 }}</td>
               </tr>
               {% endif %}
+              {% if perempat_final %}
               <tr>
                   <td rowspan="4">Perempat Final</td>
-                  <td>1</td>
+                  <td>{{ perempat_final.0.nama1 }}</td>
+                  <td>{{ perempat_final.0.nama2 }}</td>
               </tr>
+              {% for tim in perempat_final|slice:"1:4" %}
               <tr>
-                <td>2</td>
-            </tr>
-                <tr>
-                  <td>3</td>
+                <td>{{ tim.nama1 }}</td>
+                <td>{{ tim.nama2 }}</td>
               </tr>
+              {% endfor %}
+            {% endif %}
+            {% if jumlah_peserta > 8 %}
               <tr>
-                <td>4</td>
-            </tr>
-             
+                  <td rowspan="4">R16</td>
+                  <td>{{ r16.0.nama1 }}</td>
+                  <td>{{ r16.0.nama2 }}</td>
+              </tr>
+              {% for tim in r16|slice:"1:16" %}
+              <tr>
+                <td>{{ tim.nama1 }}</td>
+                <td>{{ tim.nama2 }}</td>
+              </tr>
+              {% endfor %}
+            {% endif %}
+            {% if jumlah_peserta > 16 %}
+              <tr>
+                  <td rowspan="4">R32</td>
+                  <td>{{ r32.0.nama1 }}</td>
+                  <td>{{ r32.0.nama2 }}</td>
+              </tr>
+              {% for tim in r32|slice:"1:32" %}
+              <tr>
+                <td>{{ tim.nama1 }}</td>
+                <td>{{ tim.nama2 }}</td>
+              </tr>
+              {% endfor %}
+            {% endif %}
           </tbody>
         </table>
-        R32: {{r32}}<br>
-        R16: {{r16}}
       </div>
     </div>
   </div>

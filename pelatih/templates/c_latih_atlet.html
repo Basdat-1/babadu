@@ -7,11 +7,27 @@
 {% endblock meta %}
 
 {% block content %}
+{% include "navbar-pelatih.html" %}
+
+<style>
+  @import url('https://fonts.googleapis.com/css?family=Poppins');
+  .title{
+    font-size: 30px;
+    font-weight: 1000;
+    font-family: 'Poppins';
+  }
+
+  .indigo{
+      color: #5161ce;
+  }
+
+</style>
+
 <div class="container-sm">
   <div class="daftar-sponsor">
-    <h2 class="fw-bold mb-2">Create Latih Atlet</h1>
+    <h2 class="title indigo">Create Latih Atlet</h1>
     {% if fail %}
-      <div class="alert alert-danger" role="alert">
+      <div class="alert alert-danger mt-2" role="alert">
           Data yang diisikan belum lengkap, silahkan lengkapi data terlebih dahulu
       </div>
     {% endif %}
