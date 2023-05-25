@@ -5,7 +5,23 @@ from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 def dashboard_pelatih(request):
-    return
+    nama = request.session["nama"]
+    email = request.session["email"]
+    id_pelatih = request.session["member_id"]
+    spesialisasi = query("""SELECT S.SPESIALISASI
+                    FROM SPESIALISASI S, PELATIH_SPESIALISASI PS
+                    WHERE S.ID=PS.ID_SPESIALISASI
+                    AND ID_PELATIH='{}';
+                    """.format(id_pelatih))
+    tgl_mulai = query(f"SELECT tanggal_mulai FROM PELATIH WHERE ID='{id_pelatih}'")[0]["tanggal_mulai"]
+    
+    context = {
+        "nama": nama,
+        "email": email,
+        "spesialisasi": spesialisasi,
+        "tgl_mulai": tgl_mulai
+    }
+    return render(request, 'dashboard-pelatih.html', context)
 
 
 # @login_required
@@ -17,10 +33,9 @@ def c_latih_atlet(request):
     nama_atlet = request.POST.get("nama_atlet")
     if not nama_atlet:
         return latih_atlet_view(request, True)        
-    nama_pelatih = request.session["nama"]
     
-    id_pelatih = str(query(f"SELECT P.ID FROM MEMBER M, PELATIH P WHERE M.ID=P.ID AND M.Nama='{nama_pelatih}';")[0]["id"])
-    id_atlet = str(query(f"SELECT A.ID FROM MEMBER M, ATLET A WHERE M.ID=A.ID AND M.Nama='{nama_atlet}';")[0]["id"])
+    id_pelatih = request.session["member_id"]
+    id_atlet = str(query(f"SELECT ID FROM MEMBER WHERE Nama='{nama_atlet}';")[0]["id"])
 
     query(f"INSERT INTO ATLET_PELATIH VALUES ('{id_pelatih}', '{id_atlet}');")
     return redirect('/pelatih/list-atlet')

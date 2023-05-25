@@ -7,6 +7,8 @@
 {% endblock meta %}
 
 {% block content %}
+{% include "navbar-pelatih.html" %}
+
 <div class="container m-5 text-center">
   <div class="title indigo mb-5">Dashboard Pelatih</div>
   
@@ -15,28 +17,34 @@
         <td>
           Nama
         </td>
-        <td>: Rinaldo Sirmon</td>
+        <td>: {{ nama }}</td>
       </tr>
 
       <tr>
         <td>
           Email
         </td> 
-        <td>: rsirmon5@ask.com</td>
+        <td>: {{ email }}</td>
       </tr>
 
       <tr>
         <td>
           Spesialisasi Kategori
         </td>
-        <td>: Tunggal Putri, Ganda Putra</td>
+        <td>: 
+          {% for s in spesialisasi %}
+            {{s.spesialisasi}}
+              {% if s != spesialisasi|last %},
+              {% endif %}
+          {% endfor %}
+        </td>
       </tr>
 
       <tr>
         <td>
           Tanggal Mulai
         </td>
-        <td>: 14/08/2007</td>
+        <td>: {{ tgl_mulai }}</td>
       </tr>
 
     </table>
