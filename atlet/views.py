@@ -317,8 +317,10 @@ def riwayat_ujian_kualifikasi(request):
     print(kualifikasi)
     if not kualifikasi:
         kualifikasi = 'Non-Qualified'
+        print(kualifikasi)
     else:
         kualifikasi = 'Qualified'
+        print(kualifikasi)
 
     riwayat_ujian_atlet = query(f"""SELECT TAHUN, BATCH, TEMPAT, TANGGAL, HASIL_LULUS
                                         FROM ATLET_NONKUALIFIKASI_UJIAN_KUALIFIKASI
