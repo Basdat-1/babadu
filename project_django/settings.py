@@ -88,13 +88,13 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
 
-        ## yng ini
+        # yng ini
         # 'ENGINE': 'django.db.backends.postgresql',
-        # 'NAME': 'postgres',
+        # 'NAME': 'babadu',
         # 'USER': 'postgres',
-        # 'PASSWORD': 'annisa123',
+        # 'PASSWORD': 'postgres',
         # 'HOST': '127.0.0.1',
-        # 'PORT': '5433',
+        # 'PORT': '5432',
         # 'OPTIONS': {
         #     'options': '-c search_path=babadu',
         # }
