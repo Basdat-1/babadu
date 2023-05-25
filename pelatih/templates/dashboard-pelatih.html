@@ -32,11 +32,7 @@
           Spesialisasi Kategori
         </td>
         <td>: 
-          {% for s in spesialisasi %}
-            {{s.spesialisasi}}
-              {% if s != spesialisasi|last %},
-              {% endif %}
-          {% endfor %}
+          {{ spesialisasi }}
         </td>
       </tr>
 

@@ -11,6 +11,11 @@
   <img src="https://cdn.discordapp.com/attachments/952995624951873608/1104356055129018468/17898105.png" alt="" height="100" class="d-inline-block align-text-top">
   <div class="title indigo">Register - Umpire</div>
   <a href="/register/">Ganti role</a>
+  {% if message %}
+    <div class="alert alert-danger" role="alert">
+        {{ message }}
+    </div>
+    {% endif %}
   <div class="mt-3">
       <form method="POST" action="">
           <!-- {% csrf_token %} -->
@@ -20,7 +25,7 @@
                 Nama:
               </td>
               <td class="form">
-                <input type="text" name="nama" id="nama">
+                <input type="text" name="nama" id="nama" required>
               </td>
             </tr>
 
@@ -29,7 +34,7 @@
                 Email:
               </td>
               <td class="form">
-                <input type="email" name="email" id="email">
+                <input type="email" name="email" id="email" required>
               </td>  
             </tr>
 
@@ -38,14 +43,14 @@
                 Negara:
               </td>
               <td class="form">
-                <input type="text" name="negara" id="negara">
+                <input type="text" name="negara" id="negara" required>
               </td>  
             </tr>
 
           </table>
+          <button type="submit" class="btn btn-primary submit_btn mt-3">Register</button>
         </form>
 
-        <button type="button" class="btn btn-primary submit_btn mt-3">Register</button>
 
       </div>
       <div class="my-5 small-text">

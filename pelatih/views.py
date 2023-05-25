@@ -13,6 +13,8 @@ def dashboard_pelatih(request):
                     WHERE S.ID=PS.ID_SPESIALISASI
                     AND ID_PELATIH='{}';
                     """.format(id_pelatih))
+    spesialisasi = ', '.join([s["spesialisasi"] for s in spesialisasi])
+
     tgl_mulai = query(f"SELECT tanggal_mulai FROM PELATIH WHERE ID='{id_pelatih}'")[0]["tanggal_mulai"]
     
     context = {
@@ -21,6 +23,7 @@ def dashboard_pelatih(request):
         "spesialisasi": spesialisasi,
         "tgl_mulai": tgl_mulai
     }
+    
     return render(request, 'dashboard-pelatih.html', context)
 
 
