@@ -271,3 +271,39 @@ def isIdExist(id):
         return False
     else:
         return True
+
+# @login_required
+def pilih_ujian_kualifikasi(request):
+    ujian_kualifikasi = query("""SELECT * FROM UJIAN_KUALIFIKASI;""")
+    # print(ujian_kualifikasi)
+    context = {
+        "ujian_kualifikasi": ujian_kualifikasi
+    }
+    return render(request, "pilih_ujian_kualifikasi.html", context)
+
+# @login_required
+def riwayat_ujian_kualifikasi(request):
+    id = request.session['member_id']
+    print(id)
+
+    kualifikasi = query(f"""SELECT * FROM ATLET_KUALIFIKASI WHERE id_atlet = '{id}'""")
+    print(kualifikasi)
+    if not kualifikasi:
+        kualifikasi = 'Non-Qualified'
+    else:
+        kualifikasi = 'Qualified'
+
+    riwayat_ujian_atlet = query(f"""SELECT TAHUN, BATCH, TEMPAT, TANGGAL, HASIL_LULUS
+                                        FROM ATLET_NONKUALIFIKASI_UJIAN_KUALIFIKASI
+                                        WHERE id_atlet = '{id}';""")
+    print(riwayat_ujian_atlet)
+
+    context = {
+        "riwayat_ujian_atlet": riwayat_ujian_atlet
+    }
+
+    return render(request, "riwayat_ujian_kualifikasi.html", context)
+
+# @login_required
+def soal_ujian_kualifikasi(request):
+    return render(request, "soal_ujian_kualifikasi.html")

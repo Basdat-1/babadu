@@ -3,12 +3,12 @@
 
 {% block meta %}
 <title>List Ujian Kualifikasi</title>
-<link rel="stylesheet" href="{% static 'umpire/style.css' %}">
+<link rel="stylesheet" href="{% static 'auth-dashboard/style.css' %}">
 {% endblock meta %}
 
 {% block content %}
 <!-- nav -->
-{% include "navbar-umpire.html" %}
+{% include "navbar-atlet.html" %}
 <div class="container text-center mt-5">
     <div class="title indigo text-center mt-5">List Ujian Kualifikasi</div>
     <section class="ftco-section mb-4">
@@ -22,6 +22,7 @@
                     <th>Batch</th>
                     <th>Tempat Pelaksanaan</th>
                     <th>Tanggal Pelaksanaan</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -31,6 +32,11 @@
                     <td>{{ ujian.batch }}</td>
                     <td>{{ ujian.tempat }}</td>
                     <td>{{ ujian.tanggal }}</td>
+                    <td>
+                        <a href="/atlet/ujian-kualifikasi/soal">
+                          <button type="button" class="btn btn-primary">Pilih</button>
+                        </a>
+                    </td>
                   </tr>
                   {% endfor %}   
                 </tbody>
