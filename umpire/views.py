@@ -436,6 +436,7 @@ def update_score(request):
         }
         return JsonResponse(response)
     
+# @login_required
 def list_ujian_kualifikasi(request):
     ujian_kualifikasi = query("""SELECT * FROM UJIAN_KUALIFIKASI;""")
     # print(ujian_kualifikasi)
@@ -443,3 +444,14 @@ def list_ujian_kualifikasi(request):
         "ujian_kualifikasi": ujian_kualifikasi
     }
     return render(request, "list_ujian_kualifikasi.html", context)
+
+# @login_required
+def riwayat_ujian_kualifikasi(request):
+    riwayat_ujian_atlet_all = query("""SELECT NAMA, TAHUN, BATCH, TEMPAT, TANGGAL, HASIL_LULUS
+                                        FROM MEMBER, ATLET_NONKUALIFIKASI_UJIAN_KUALIFIKASI
+                                        WHERE ID=ID_ATLET;""")
+    # print(riwayat_ujian_atlet_all)
+    context = {
+        "riwayat_ujian_atlet_all": riwayat_ujian_atlet_all
+    }
+    return render(request, "riwayat_ujian_kualifikasi_all.html", context)
