@@ -13,6 +13,8 @@ urlpatterns = [
     path('save_stopwatch', save_stopwatch, name='save_stopwatch'),
     path('save_match', save_match, name='save_match'),
     path('update_score/', update_score, name='update_score'),
-
+    path('ujian-kualifikasi/list', list_ujian_kualifikasi, name='list_ujian_kualifikasi'),
+    path('ujian-kualifikasi/riwayat', riwayat_ujian_kualifikasi, name='riwayat_ujian_kualifikasi'),
+    path('ujian-kualifikasi/buat', buat_ujian_kualifikasi, name='buat_ujian_kualifikasi'),
 ]
 

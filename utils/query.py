@@ -26,7 +26,7 @@ try:
     #                     password="openpgpwd",
     #                     host="localhost",
     #                     port="5432",
-    #                     database="postgres")    
+    #                     database="babadu")    
 
     # Create a cursor to perform database operations
     connection.autocommit = True
