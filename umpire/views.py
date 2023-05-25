@@ -455,3 +455,22 @@ def riwayat_ujian_kualifikasi(request):
         "riwayat_ujian_atlet_all": riwayat_ujian_atlet_all
     }
     return render(request, "riwayat_ujian_kualifikasi_all.html", context)
+
+@csrf_exempt
+def buat_ujian_kualifikasi(request):
+    if request.method == 'POST':
+        tahun = int(request.POST['tahun'])
+        batch = int(request.POST['batch'])
+        tempat = str(request.POST['tempat'])
+        tanggal = request.POST['tanggal']
+
+        isValid = tahun and batch and tempat and tanggal
+        if isValid:
+            ujian = query(f"INSERT INTO UJIAN_KUALIFIKASI VALUES('{tahun}', '{batch}', '{tempat}', '{tanggal}')")
+            print(ujian)
+            return redirect("/umpire/ujian-kualifikasi/list")
+        else:
+            context = {"message": "Data yang diisikan belum benar, silahkan lengkapi data terlebih dahulu."}
+            return render(request, 'c_ujian_kualifikasi.html', context)
+    else:
+        return render(request, 'c_ujian_kualifikasi.html')
