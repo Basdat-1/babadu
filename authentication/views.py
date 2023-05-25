@@ -45,12 +45,14 @@ def register_atlet(request):
         nama = str(request.POST['nama'])
         email = str(request.POST['email'])
         negara = str(request.POST['negara'])
-        tgl_lahir = str(request.POST['tgl_lahir'])
-        play = str(request.POST['play'])
+        tgl_lahir = request.POST['tgl_lahir']
+        if request.POST['play'] == 'right':
+          play = True
+        else: play = False
         height = int(request.POST['height'])
-        sex = str(request.POST['sex'])
-
-        # if play 
+        if request.POST['sex'] == 'm':
+          sex = True
+        else: sex = False
 
         isValid = id and nama and email and negara and tgl_lahir and play and height and sex
 
