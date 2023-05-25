@@ -7,11 +7,11 @@ try:
     '''
     SETIAP MAU PUSH UNCOMMENT CONNECTION KE RAILWAY & COMMENT CONNECTION LOCAL
     '''
-    # connection = psycopg2.connect(user="postgres",
-    #                     password='TBaCPVaBPEmMTXrJ1RDd',
-    #                     host="containers-us-west-2.railway.app",
-    #                     port="6346",
-    #                     database="railway")
+    connection = psycopg2.connect(user="postgres",
+                        password='TBaCPVaBPEmMTXrJ1RDd',
+                        host="containers-us-west-2.railway.app",
+                        port="6346",
+                        database="railway")
     # connection = psycopg2.connect(user="postgres",
     #                     password="postgres",
     #                     host="localhost",
@@ -22,11 +22,11 @@ try:
     #                     host="127.0.0.1",
     #                     port="5433",
     #                     database="postgres")
-    connection = psycopg2.connect(user="openpg",
-                        password="openpgpwd",
-                        host="localhost",
-                        port="5432",
-                        database="babadu")    
+    # connection = psycopg2.connect(user="openpg",
+    #                     password="openpgpwd",
+    #                     host="localhost",
+    #                     port="5432",
+    #                     database="babadu")    
 
     # Create a cursor to perform database operations
     connection.autocommit = True
