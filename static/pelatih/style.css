@@ -1,4 +1,8 @@
-body {
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+@import url('https://fonts.googleapis.com/css?family=Poppins');
+
+body{
+	font-family: 'Roboto', sans-serif;
     text-align: center;
 }
 .container-sm {
@@ -39,13 +43,29 @@ td {
 }
 p {
     margin-top: 28px;
-    font-weight: 450;
 }
 a {
-    font-weight: bold;
     color: gray;
 }
 .alert {
     display: inline-block;
     margin: 0;
+}
+
+.title{
+    font-size: 30px;
+    font-weight: 1000;
+    font-family: 'Poppins';
+}
+
+.indigo{
+    color: #5161ce;
+}
+
+td {
+    padding: 7px;
+}
+
+.small-text {
+    font-size: 14px;
 }

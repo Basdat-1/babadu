@@ -10,20 +10,20 @@ forms = {}
 def atletHome(request):
     nama = string.capwords(request.session['nama'])
     email = request.session['email']
-    print(nama, email)
-    id = query(f"""SELECT id FROM MEMBER
-               WHERE nama = '{nama}' AND email = '{email}'""")[0]
-    id = id['id']
-    print(id)
+    id = request.session["member_id"]
 
     result = query(f"""SELECT * FROM ATLET A
                     WHERE A.id = '{id}'""")[0]
-    print(result)
 
-    pelatih = query(f"""SELECT * FROM ATLET_PELATIH AP JOIN MEMBER M ON M.id = AP.id_pelatih
-                    WHERE AP.id_atlet = '{id}'""")[0]
-    print(pelatih)
-    pelatih = pelatih['nama']
+    pelatih = query("""SELECT * FROM ATLET_PELATIH AP 
+                    JOIN MEMBER M ON M.id = AP.id_pelatih
+                    WHERE AP.id_atlet = '{}'
+                    """.format(id))
+    
+    if len(pelatih) == 0:
+        pelatih = '-'
+    else:
+        pelatih = ', '.join([p["nama"] for p in pelatih])
                     
     if result['jenis_kelamin'] == False:
         sex = 'Perempuan'
