@@ -14,7 +14,8 @@ urlpatterns = [
     path('save_match', save_match, name='save_match'),
     path('save_final', save_final, name='save_final'),
     path('update_score/', update_score, name='update_score'),
-    path('list-ujian-kualifikasi/', list_ujian_kualifikasi, name='list_ujian_kualifikasi'),
-
+    path('ujian-kualifikasi/list', list_ujian_kualifikasi, name='list_ujian_kualifikasi'),
+    path('ujian-kualifikasi/riwayat', riwayat_ujian_kualifikasi, name='riwayat_ujian_kualifikasi'),
+    path('ujian-kualifikasi/buat', buat_ujian_kualifikasi, name='buat_ujian_kualifikasi'),
 ]
 

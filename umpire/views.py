@@ -574,6 +574,7 @@ def update_score(request):
         }
         return JsonResponse(response)
     
+# @login_required
 def list_ujian_kualifikasi(request):
     ujian_kualifikasi = query("""SELECT * FROM UJIAN_KUALIFIKASI;""")
     # print(ujian_kualifikasi)
@@ -581,3 +582,33 @@ def list_ujian_kualifikasi(request):
         "ujian_kualifikasi": ujian_kualifikasi
     }
     return render(request, "list_ujian_kualifikasi.html", context)
+
+# @login_required
+def riwayat_ujian_kualifikasi(request):
+    riwayat_ujian_atlet_all = query("""SELECT NAMA, TAHUN, BATCH, TEMPAT, TANGGAL, HASIL_LULUS
+                                        FROM MEMBER, ATLET_NONKUALIFIKASI_UJIAN_KUALIFIKASI
+                                        WHERE ID=ID_ATLET;""")
+    # print(riwayat_ujian_atlet_all)
+    context = {
+        "riwayat_ujian_atlet_all": riwayat_ujian_atlet_all
+    }
+    return render(request, "riwayat_ujian_kualifikasi_all.html", context)
+
+@csrf_exempt
+def buat_ujian_kualifikasi(request):
+    if request.method == 'POST':
+        tahun = int(request.POST['tahun'])
+        batch = int(request.POST['batch'])
+        tempat = str(request.POST['tempat'])
+        tanggal = request.POST['tanggal']
+
+        isValid = tahun and batch and tempat and tanggal
+        if isValid:
+            ujian = query(f"INSERT INTO UJIAN_KUALIFIKASI VALUES('{tahun}', '{batch}', '{tempat}', '{tanggal}')")
+            print(ujian)
+            return redirect("/umpire/ujian-kualifikasi/list")
+        else:
+            context = {"message": "Data yang diisikan belum benar, silahkan lengkapi data terlebih dahulu."}
+            return render(request, 'c_ujian_kualifikasi.html', context)
+    else:
+        return render(request, 'c_ujian_kualifikasi.html')

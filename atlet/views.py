@@ -1,11 +1,11 @@
 from django.shortcuts import render
+from django.shortcuts import redirect
 from utils.query import query
 import string
 import uuid
 
 # Create your views here.
 
-forms = {}
 
 def atletHome(request):
     nama = string.capwords(request.session['nama'])
@@ -111,8 +111,6 @@ def daftarPartaiKompetisi(request, namaStadium, namaEvent, tahunEvent):
     jumlah_peserta = query(f"""SELECT COUNT(nomor_peserta) FROM PESERTA_MENDAFTAR_EVENT
                       WHERE nama_event = '{namaEvent}' AND tahun = '{tahunEvent}'""")[0]['count']
     kapasitas_stadium = query(f"""SELECT kapasitas FROM STADIUM WHERE nama = '{namaStadium}'""")[0]['kapasitas']
-    
-    print(result)
 
     list_kategori = query(f"""SELECT jenis_partai FROM PARTAI_KOMPETISI
                         WHERE nama_event = '{namaEvent}' AND tahun_event = '{tahunEvent}'""")
@@ -210,7 +208,6 @@ def daftarPartaiKompetisi(request, namaStadium, namaEvent, tahunEvent):
             
         list_partai.append(dict_kategori)
         
-    print(list_partai)
     context = {'result':result,
                'jumlah_peserta':jumlah_peserta,
                'kapasitas_stadium': kapasitas_stadium,
@@ -228,27 +225,57 @@ def checkUserSex(request):
     return sex
 
 def joinEvent(request):
-    nama_stadium = request.GET.get('nama_stadium')
     nama_event = request.GET.get('nama_event')
-    tahun = request.GET.get('tahun')
+    tahun = (int) (request.GET.get('tahun'))
     jenis_partai = request.GET.get('jenis_partai')
     partner = request.GET.get('partner')
 
-    id_user = getIdUser(request)
-    id_partner = getIdByName(partner)
+    print(nama_event, tahun, jenis_partai, partner)
 
-    check_ganda = query(f"""SELECT * FROM ATLET_GANDA
-                        WHERE (id_atlet_kualifikasi = '{id_user}' AND id_atlet_kualifikasi_2 = '{id_partner}')
-                        OR (id_atlet_kualifikasi_2 = '{id_user}' AND id_atlet_kualifikasi = '{id_partner})""")
-    
-    if check_ganda:
-        return atletHome(request)
+    id_user = getIdUser(request)
+
+    if "Tunggal" in jenis_partai:
+        check_peserta_kompetisi = query(f"""SELECT * FROM PESERTA_KOMPETISI
+                                    WHERE id_atlet_kualifikasi = '{id_user}'""")
     else:
-        id_atlet_ganda = uuid.uuid4()
-        while (isIdExist(id_atlet_ganda)):
-            id_atlet_ganda = uuid.uuid4()
+        id_partner = getIdByName(partner)
+        check_ganda = query(f"""SELECT * FROM ATLET_GANDA
+                        WHERE (id_atlet_kualifikasi = '{id_user}' AND id_atlet_kualifikasi_2 = '{id_partner}')
+                        OR (id_atlet_kualifikasi_2 = '{id_user}' AND id_atlet_kualifikasi = '{id_partner}')""")
+        if check_ganda:
+            pass
             
-        daftar_ganda = query(f"""INSERT INTO ATLET_GANDA VALUES ('{id_atlet_ganda}', '{id_user}', '{id_partner}')""")
+        else:
+            print("id_atlet_ganda")
+            id_atlet_ganda = uuid.uuid4()
+            while (isIdExist(id_atlet_ganda)):
+                id_atlet_ganda = uuid.uuid4()
+            
+            daftar_ganda = query(f"""INSERT INTO ATLET_GANDA VALUES ('{id_atlet_ganda}', '{id_user}', '{id_partner}')""")
+            print(daftar_ganda)
+        check_peserta_kompetisi = query(f"""SELECT * FROM PESERTA_KOMPETISI
+                                    WHERE id_atlet_ganda = '{id_atlet_ganda}'""")    
+    if check_peserta_kompetisi:
+        return redirect('atlet:home')
+    else:
+        nomor_peserta = getLatestNomorPeserta() + 1
+        world_rank_peserta = getWorldRankById(id_user)
+        world_tour_rank_peserta = getWorldTourRankById(id_user)
+        if "Tunggal" in jenis_partai:
+            daftar_peserta = query(f"""INSERT INTO PESERTA_KOMPETISI VALUES (
+                                    {nomor_peserta}, NULL, '{id_user}', {world_rank_peserta}, {world_tour_rank_peserta})""")
+            print(daftar_peserta)
+        else:
+            daftar_peserta = query(f"""INSERT INTO PESERTA_KOMPETISI VALUES (
+                                    {nomor_peserta}, '{id_atlet_ganda}', NULL, {world_rank_peserta}, {world_tour_rank_peserta})""")
+            print(daftar_peserta)
+
+        jenis_partai = convertJenisPartaiName(jenis_partai)
+        daftar_partai_peserta_kompetisi = query(f"""INSERT INTO PARTAI_PESERTA_KOMPETISI VALUES (
+                                                '{jenis_partai}', '{nama_event}', {tahun}, {nomor_peserta})""")
+        print(daftar_partai_peserta_kompetisi)
+
+    return redirect('atlet:home')
 
 def getIdUser(request):
     nama = string.capwords(request.session['nama'])
@@ -271,3 +298,70 @@ def isIdExist(id):
         return False
     else:
         return True
+
+# @login_required
+def pilih_ujian_kualifikasi(request):
+    ujian_kualifikasi = query("""SELECT * FROM UJIAN_KUALIFIKASI;""")
+    # print(ujian_kualifikasi)
+    context = {
+        "ujian_kualifikasi": ujian_kualifikasi
+    }
+    return render(request, "pilih_ujian_kualifikasi.html", context)
+
+# @login_required
+def riwayat_ujian_kualifikasi(request):
+    id = request.session['member_id']
+    print(id)
+
+    kualifikasi = query(f"""SELECT * FROM ATLET_KUALIFIKASI WHERE id_atlet = '{id}'""")
+    print(kualifikasi)
+    if not kualifikasi:
+        kualifikasi = 'Non-Qualified'
+        print(kualifikasi)
+    else:
+        kualifikasi = 'Qualified'
+        print(kualifikasi)
+
+    riwayat_ujian_atlet = query(f"""SELECT TAHUN, BATCH, TEMPAT, TANGGAL, HASIL_LULUS
+                                        FROM ATLET_NONKUALIFIKASI_UJIAN_KUALIFIKASI
+                                        WHERE id_atlet = '{id}';""")
+    print(riwayat_ujian_atlet)
+
+    context = {
+        "riwayat_ujian_atlet": riwayat_ujian_atlet
+    }
+
+    return render(request, "riwayat_ujian_kualifikasi.html", context)
+
+# @login_required
+def soal_ujian_kualifikasi(request):
+    return render(request, "soal_ujian_kualifikasi.html")
+    
+def getLatestNomorPeserta():
+    nomor_peserta = query(f"""SELECT nomor_peserta FROM PESERTA_KOMPETISI
+                    ORDER BY nomor_peserta DESC""")[0]['nomor_peserta']
+    return nomor_peserta
+
+def getWorldRankById(id):
+    world_rank = query(f"""SELECT world_rank FROM ATLET_KUALIFIKASI
+                        WHERE id_atlet = '{id}'""")[0]['world_rank']
+    return world_rank
+
+def getWorldTourRankById(id):
+    world_tour_rank = query(f"""SELECT world_tour_rank FROM ATLET_KUALIFIKASI
+                        WHERE id_atlet = '{id}'""")[0]['world_tour_rank']
+    return world_tour_rank
+
+def convertJenisPartaiName(name):
+    if name == "Tunggal Putra":
+        return "MS"
+    elif name == "Tunggal Putri":
+        return "WS"
+    elif name == "Ganda Putra":
+        return "MD"
+    elif name == "Ganda Putri":
+        return "WD"
+    elif name == "Ganda Campuran":
+        return "XD"
+    else:
+        return None
