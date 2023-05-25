@@ -435,3 +435,11 @@ def update_score(request):
             'current_score': current_score
         }
         return JsonResponse(response)
+    
+def list_ujian_kualifikasi(request):
+    ujian_kualifikasi = query("""SELECT * FROM UJIAN_KUALIFIKASI;""")
+    # print(ujian_kualifikasi)
+    context = {
+        "ujian_kualifikasi": ujian_kualifikasi
+    }
+    return render(request, "list_ujian_kualifikasi.html", context)
