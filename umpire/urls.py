@@ -15,6 +15,6 @@ urlpatterns = [
     path('update_score/', update_score, name='update_score'),
     path('ujian-kualifikasi/list', list_ujian_kualifikasi, name='list_ujian_kualifikasi'),
     path('ujian-kualifikasi/riwayat', riwayat_ujian_kualifikasi, name='riwayat_ujian_kualifikasi'),
-
+    path('ujian-kualifikasi/buat', buat_ujian_kualifikasi, name='buat_ujian_kualifikasi'),
 ]
 
