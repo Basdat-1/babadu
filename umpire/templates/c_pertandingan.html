@@ -295,7 +295,7 @@
                             const nextBabak = response.next_babak;
 
                             // Redirect ke halaman hasil_pertandingan.html dengan menyertakan parameter nextBabak
-                            window.location.href = "#";
+                            window.location.href = "/umpire/hasil-pertandingan?nama_event={{ namaEvent|urlencode }}&tahun={{ tahun|urlencode }}&jenis_partai={{ jenisPartai|urlencode }}";
                         },
                         error: function(xhr, textStatus, error) {
                             console.log(xhr.responseText);

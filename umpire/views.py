@@ -5,6 +5,7 @@ from utils.query import query
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 import json
+from utils.query import *
 from django.db import transaction
 
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
@@ -357,15 +358,6 @@ def save_match(request):
 
 
             for i in data_pertandingan:
-                # jenis_babak
-                # tanggal
-                # waktu_mulai
-                # total_durasi
-                # nama_event
-                # tahun_event
-                # id_umpire
-                # print(i)
-
                 tim_1_no = i['tim_1']['nomor_peserta']
                 tim_2_no = i['tim_2']['nomor_peserta']
                 tim_1_win = i['tim_1']['is_win']
@@ -381,9 +373,7 @@ def save_match(request):
                     print("error")
                     print(row_count)
                     raise Exception("error insert tim 1 data")
-                    return JsonResponse({
-                        "message": "Gagal insert match tim 1",
-                    }, status=400)
+
             
                 row_count = query(f"""
                     INSERT INTO peserta_mengikuti_match (jenis_babak, tanggal, waktu_mulai, nomor_peserta, status_menang)
@@ -395,15 +385,41 @@ def save_match(request):
                     print("error")
                     print(row_count)
                     raise Exception("error insert tim 2 data")
-                    return JsonResponse({
-                        "message": "Gagal insert match tim 2",
-                    }, status=400)
 
     
         nextBabak = mapNextMatchBabak[jenis_babak]
         return JsonResponse({
             "next_babak": nextBabak,
         })
+
+def set_point_juara_1(kategori):
+    if kategori == 'S100':
+        point = 1000
+    elif kategori == 'S750':
+        point = 750
+    elif kategori == 'S500':
+        point = 500
+    elif kategori == 'S300':
+        point = 300
+    elif kategori == 'S100':
+        point = 100
+
+    return point
+
+def set_point_juara_2(kategori):
+    if kategori == 'S100':
+        point = 800
+    elif kategori == 'S750':
+        point = 600
+    elif kategori == 'S500':
+        point = 400
+    elif kategori == 'S300':
+        point = 240
+    elif kategori == 'S100':
+        point = 80
+
+    return point
+
     
 @csrf_exempt
 def save_final(request):
@@ -433,21 +449,8 @@ def save_final(request):
                 print("error")
                 print(row_count)
                 raise Exception("failed insert to match")
-                return JsonResponse({
-                    "message": "Gagal insert match",
-                }, status=400)
-
 
             for i in data_pertandingan:
-                # jenis_babak
-                # tanggal
-                # waktu_mulai
-                # total_durasi
-                # nama_event
-                # tahun_event
-                # id_umpire
-                # print(i)
-
                 tim_1_no = i['tim_1']['nomor_peserta']
                 tim_2_no = i['tim_2']['nomor_peserta']
                 tim_1_win = i['tim_1']['is_win']
@@ -463,30 +466,82 @@ def save_final(request):
                     print("error")
                     print(row_count)
                     raise Exception("error insert tim 1 data")
-                    return JsonResponse({
-                        "message": "Gagal insert match tim 1",
-                    }, status=400)
             
                 row_count = query(f"""
                     INSERT INTO peserta_mengikuti_match (jenis_babak, tanggal, waktu_mulai, nomor_peserta, status_menang)
                     VALUES ('{jenis_babak}', '{tanggal_mulai}', '{waktu_mulai}', {tim_2_no}, {tim_2_win})
                 """)
 
-                
                 if (isinstance(row_count, int) and row_count <= 0) or not isinstance(row_count, int):
                     print("error")
                     print(row_count)
                     raise Exception("error insert tim 2 data")
-                    return JsonResponse({
-                        "message": "Gagal insert match tim 2",
-                    }, status=400)
+                
+                # add points here
+                
+        #     get_kategori = query(f""" 
+        #             SELECT KATEGORI_SUPERSERIES FROM EVENT WHERE NAMA_EVENT = '{nama_event}'
+        #     """)
+        #     get_kategori = get_kategori[0]['kategori_superseries']
+                
+        #     point_juara_1 = set_point_juara_1(get_kategori)
+        #     point_juara_2 = set_point_juara_2(get_kategori)
 
-    
+        #     print(tim_1_no)
+        #     print(tim_2_no)
+        #     print(tim_1_win)
+        #     print(tim_2_win)
+        #     print(point_juara_1)
+        #     print(point_juara_2)
+
+        #     id_tim_1 = query(f"""
+        #             SELECT ID_ATLET_KUALIFIKASI
+        #             FROM peserta_kompetisi as pk WHERE
+        #             pk.nomor_peserta = {tim_1_no}
+        #     """)
+
+        #     id_tim_2 = query(f"""
+        #             SELECT ID_ATLET_KUALIFIKASI
+        #             FROM peserta_kompetisi as pk WHERE
+        #             pk.nomor_peserta = {tim_2_no}
+        #     """)
+
+        #     if tim_1_win == True:
+        #             query_update_point_tim_1 = query(f"""
+        #                 UPDATE point_history
+        #                 SET total_point = total_point + {point_juara_1}
+        #                 WHERE id_atlet = {id_tim_1}"""
+        #             )
+        #     else:
+        #             query_update_point_tim_1 = query(f"""
+        #                 UPDATE point_history
+        #                 SET total_point = total_point + {point_juara_2}
+        #                 WHERE id_atlet = {id_tim_1}"""
+        #             )
+
+        #     if tim_2_win == True:
+        #             query_update_point_tim_2 = query(f"""
+        #                 UPDATE point_history
+        #                 SET total_point = total_point + {point_juara_1}
+        #                 WHERE id_atlet = {id_tim_2}"""
+        #             )
+        #     else:
+        #             query_update_point_tim_2 = query(f"""
+        #                 UPDATE point_history
+        #                 SET total_point = total_ point + {point_juara_2}
+        #                 WHERE id_atlet = {id_tim_2}"""
+        #             )
+
+        # cursor.execute(query_update_point_tim_1)
+        # cursor.execute(query_update_point_tim_2)
+
         nextBabak = mapNextMatchBabak[jenis_babak]
         return JsonResponse({
             "next_babak": nextBabak,
         })
-
+        
+    
+    
 def save_stopwatch(request):
     if request.method == 'POST':
         elapsed_time = request.POST.get('elapsed_time')

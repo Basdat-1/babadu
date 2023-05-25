@@ -45,7 +45,6 @@
                 <td>{{ partai.jumlah_peserta }}/{{ partai.kapasitas }}</td>
                 <td>
                   {% if partai.jumlah_peserta == partai.kapasitas %}
-                  {{ partai.kategori_superseries }}
                   <a href="/umpire/live-score/{{ partai.nama_event }}/{{ partai.jenis_partai }}/{{ partai.tahun }}/{{ partai.kategori_superseries }}">
                     <button type="button" class="btn btn-primary m-1" id="mulai">Mulai</button>
                   </a>
