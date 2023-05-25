@@ -384,6 +384,88 @@ def save_match(request):
         return JsonResponse({
             "next_babak": nextBabak,
         })
+    
+@csrf_exempt
+def save_final(request):
+    if request.method == 'POST':
+        request_body = json.loads(request.body)
+
+        tanggal_mulai = request_body['tanggal_mulai']
+        waktu_mulai = request_body['waktu_mulai']
+        jenis_babak = request_body['jenis_babak']
+        jenis_partai = request_body['jenis_partai']
+        nama_event = request_body['nama_event']
+        tahun_event = request_body['tahun_event']
+        durasi = request_body['durasi']
+        data_pertandingan = request_body['data_pertandingan']
+
+        umpire_id = request.session['member_id']
+
+        with transaction.atomic():
+            row_count = query(f"""
+                INSERT INTO match (jenis_babak, tanggal, waktu_mulai, nama_event, tahun_event, id_umpire, total_durasi) 
+                VALUES 
+                ('{jenis_babak}', '{tanggal_mulai}', '{waktu_mulai}', 
+                '{nama_event}', {tahun_event}, '{umpire_id}', {durasi}) 
+            """)
+
+            if (isinstance(row_count, int) and row_count <= 0) or not isinstance(row_count, int):
+                print("error")
+                print(row_count)
+                raise Exception("failed insert to match")
+                return JsonResponse({
+                    "message": "Gagal insert match",
+                }, status=400)
+
+
+            for i in data_pertandingan:
+                # jenis_babak
+                # tanggal
+                # waktu_mulai
+                # total_durasi
+                # nama_event
+                # tahun_event
+                # id_umpire
+                # print(i)
+
+                tim_1_no = i['tim_1']['nomor_peserta']
+                tim_2_no = i['tim_2']['nomor_peserta']
+                tim_1_win = i['tim_1']['is_win']
+                tim_2_win = i['tim_2']['is_win']
+                
+                print("test here")
+                row_count = query(f"""
+                    INSERT INTO peserta_mengikuti_match (jenis_babak, tanggal, waktu_mulai, nomor_peserta, status_menang)
+                    VALUES ('{jenis_babak}', '{tanggal_mulai}', '{waktu_mulai}', {tim_1_no}, {tim_1_win})
+                """)
+                
+                if (isinstance(row_count, int) and row_count <= 0) or not isinstance(row_count, int):
+                    print("error")
+                    print(row_count)
+                    raise Exception("error insert tim 1 data")
+                    return JsonResponse({
+                        "message": "Gagal insert match tim 1",
+                    }, status=400)
+            
+                row_count = query(f"""
+                    INSERT INTO peserta_mengikuti_match (jenis_babak, tanggal, waktu_mulai, nomor_peserta, status_menang)
+                    VALUES ('{jenis_babak}', '{tanggal_mulai}', '{waktu_mulai}', {tim_2_no}, {tim_2_win})
+                """)
+
+                
+                if (isinstance(row_count, int) and row_count <= 0) or not isinstance(row_count, int):
+                    print("error")
+                    print(row_count)
+                    raise Exception("error insert tim 2 data")
+                    return JsonResponse({
+                        "message": "Gagal insert match tim 2",
+                    }, status=400)
+
+    
+        nextBabak = mapNextMatchBabak[jenis_babak]
+        return JsonResponse({
+            "next_babak": nextBabak,
+        })
 
 def save_stopwatch(request):
     if request.method == 'POST':

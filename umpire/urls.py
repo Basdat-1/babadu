@@ -12,6 +12,7 @@ urlpatterns = [
     path('get_datetime', get_datetime, name='get_datetime'),
     path('save_stopwatch', save_stopwatch, name='save_stopwatch'),
     path('save_match', save_match, name='save_match'),
+    path('save_final', save_final, name='save_final'),
     path('update_score/', update_score, name='update_score'),
 
 ]
