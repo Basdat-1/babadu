@@ -64,11 +64,13 @@ def register_atlet(request):
 
         isValid = id and nama and email and negara and tgl_lahir and play and height and sex
         if isValid:
-            query(f"INSERT INTO MEMBER VALUES('{id}', '{nama}', '{email}')")
+            message = query(f"INSERT INTO MEMBER VALUES('{id}', '{nama}', '{email}')")
+            if "Email sudah pernah didaftarkan" in message.args[0]:
+               context = {
+                  "message": "Email sudah pernah didaftarkan"
+               }
+               return render(request, 'register-atlet.html', context)
             query(f"INSERT INTO ATLET VALUES('{id}', '{tgl_lahir}', '{negara}', {play_bool}, '{height}', NULL, {sex_bool})")
-            atlet_non_kualifikasi = query(f"INSERT INTO ATLET_NON_KUALIFIKASI VALUES('{id}')")
-            print(atlet_non_kualifikasi)
-
             return redirect("/login")
         else:
             context = {"message": "Mohon masukan data Anda dengan benar"}
@@ -89,7 +91,12 @@ def register_umpire(request):
         isValid = id and nama and email and negara
 
         if isValid:
-            query(f"INSERT INTO MEMBER VALUES('{id}', '{nama}', '{email}')")
+            message = query(f"INSERT INTO MEMBER VALUES('{id}', '{nama}', '{email}')")
+            if "Email sudah pernah didaftarkan" in message.args[0]:
+               context = {
+                  "message": "Email sudah pernah didaftarkan"
+               }
+               return render(request, 'register-umpire.html', context)
             query(f"INSERT INTO UMPIRE VALUES('{id}', '{negara}')")
             return redirect("/login")
         
@@ -112,7 +119,12 @@ def register_pelatih(request):
         isValid = id and nama and email and kategori and tgl_mulai
 
         if isValid:
-            query(f"INSERT INTO MEMBER VALUES('{id}', '{nama}', '{email}')")
+            message = query(f"INSERT INTO MEMBER VALUES('{id}', '{nama}', '{email}')")
+            if "Email sudah pernah didaftarkan" in message.args[0]:
+               context = {
+                  "message": "Email sudah pernah didaftarkan"
+               }
+               return render(request, 'register-pelatih.html', context)
             query(f"INSERT INTO PELATIH VALUES('{id}', '{tgl_mulai}')")
 
             for k in kategori:
