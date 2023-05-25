@@ -124,7 +124,7 @@ def get_hasil_pertandingan(request):
                         AND M.jenis_babak=PM.jenis_babak
                         AND M.tanggal=PM.tanggal
                         AND M.waktu_mulai=PM.waktu_mulai
-                        AND (status_menang='false' OR PM.jenis_babak='FINAL')
+                        AND (status_menang='false' OR PM.jenis_babak='R2')
                         AND M.nama_event='{}'
                         AND M.tahun_event='{}';
                     """.format(nama_event, tahun))
@@ -138,7 +138,7 @@ def get_hasil_pertandingan(request):
                         AND M.tanggal=PM.tanggal
                         AND M.waktu_mulai=PM.waktu_mulai
                         AND PK.ID_ATLET_KUALIFIKASI=ME.ID
-                        AND (status_menang='false' OR PM.jenis_babak='FINAL')
+                        AND (status_menang='false' OR PM.jenis_babak='R2')
                         AND M.nama_event='{}'
                         AND M.tahun_event='{}';
                     """.format(nama_event, tahun))
@@ -146,11 +146,11 @@ def get_hasil_pertandingan(request):
     
     r32 = filter_peserta(peserta, "R32")
     r16 = filter_peserta(peserta, "R16")
-    perempat_final = filter_peserta(peserta, "PEREMPAT FINAL")
-    semifinal = filter_peserta(peserta, "SEMIFINAL")
-    juara_3 = juara_1_3(peserta, "JUARA 3", True)
-    juara_2 = juara_1_3(peserta, "FINAL", False)
-    juara_1 = juara_1_3(peserta, "FINAL", True)
+    perempat_final = filter_peserta(peserta, "R8")
+    semifinal = filter_peserta(peserta, "R4")
+    juara_3 = juara_1_3(peserta, "R3", True)
+    juara_2 = juara_1_3(peserta, "R2", False)
+    juara_1 = juara_1_3(peserta, "R2", True)
     
     context = {
         "jenis_partai": info_partai["jenis_partai"],
