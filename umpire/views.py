@@ -191,7 +191,7 @@ mapNextMatchBabak = {
 }
 
 
-def c_pertandingan(request, namaEvent, jenisPartai, tahun):
+def c_pertandingan(request, namaEvent, jenisPartai, tahun, kategori):
     jenisBabak = request.GET.get("jenisBabak")
 
     if jenisBabak is None:
@@ -284,7 +284,8 @@ def c_pertandingan(request, namaEvent, jenisPartai, tahun):
         'jenis_pertandingan': jenisPertandingan,
         'jenisPartai' : jenisPartai,
         'jenisBabak': jenisBabak,
-        'total_peserta_real' : total_peserta_real
+        'total_peserta_real' : total_peserta_real,
+        'kategori':kategori,
     }
     return render(request, 'c_pertandingan.html', context)
 
