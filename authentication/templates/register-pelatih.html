@@ -11,6 +11,11 @@
   <img src="https://cdn.discordapp.com/attachments/952995624951873608/1104356055129018468/17898105.png" alt="" height="100" class="d-inline-block align-text-top">
   <div class="title indigo">Register - Pelatih</div>
   <a href="/register/">Ganti role</a>
+  {% if message %}
+    <div class="alert alert-danger" role="alert">
+        {{ message }}
+    </div>
+    {% endif %}
   <div class="mt-3">
       <form method="POST" action="/register/pelatih/">
           <!-- {% csrf_token %} -->
@@ -20,7 +25,7 @@
                 Nama:
               </td>
               <td class="form">
-                <input type="text" name="nama" id="nama">
+                <input type="text" name="nama" id="nama" required>
               </td>
             </tr>
 
@@ -29,7 +34,7 @@
                 Email:
               </td>
               <td class="form">
-                <input type="email" name="email" id="email">
+                <input type="email" name="email" id="email" required>
               </td>  
             </tr>
 
@@ -38,14 +43,14 @@
                 Kategori:
               </td>
               <td class="form">
-                  <input type="checkbox" id="ms" name="ms" value="ms">
-                  <label for="ms"> Tunggal Putra  </label>
-                  <input type="checkbox" id="ws" name="ws" value="ws">
-                  <label for="ws"> Tunggal Putri</label><br>
-                  <input type="checkbox" id="md" name="md" value="md">
-                  <label for="md"> Ganda Putra    </label>
-                  <input type="checkbox" id="wd" name="wd" value="wd">
-                  <label for="wd"> Ganda Putri</label><br>
+                  <input type="checkbox" id="ms" name="kategori" value="Tunggal Putra">
+                  <label for="Tunggal Putra"> Tunggal Putra  </label>
+                  <input type="checkbox" id="ws" name="kategori" value="Tunggal Putri">
+                  <label for="Tunggal Putri"> Tunggal Putri</label><br>
+                  <input type="checkbox" id="md" name="kategori" value="Ganda Putra">
+                  <label for="Ganda Putra"> Ganda Putra    </label>
+                  <input type="checkbox" id="wd" name="kategori" value="Ganda Putri">
+                  <label for="Ganda Putri"> Ganda Putri</label><br>
               </td>  
             </tr>
 
@@ -54,13 +59,13 @@
                 Tanggal Mulai:
               </td>
               <td class="form">
-                <input type="date" name="tgl_lahir" id="tgl_lahir">
+                <input type="date" name="tgl_mulai" id="tgl_mulai" required>
               </td>  
             </tr>
           </table>
           <button type="submit" class="btn btn-primary submit_btn mt-3">Register</button>
-
         </form>
+
       </div>
       <div class="my-5 small-text">
           Sudah punya akun? <a href="/login/">Login</a>

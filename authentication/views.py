@@ -1,3 +1,4 @@
+import uuid
 from django.shortcuts import render, redirect
 from utils.query import query
 from django.views.decorators.csrf import csrf_exempt
@@ -32,7 +33,111 @@ def get_role(email):
 def register(request):
   if request.method != 'POST':
     return render(request, 'register.html')
+  
+def get_uuid_existed():
+   uuid_member =  query("SELECT ID FROM MEMBER;")
+   return [member['id'] for member in uuid_member]
+  
+@csrf_exempt
+def register_atlet(request):
+    if request.method == 'POST':
+        id = uuid.uuid4()
+        while (id in get_uuid_existed()):
+           id = uuid.uuid4()
+        nama = str(request.POST['nama'])
+        email = str(request.POST['email'])
+        negara = str(request.POST['negara'])
+        tgl_lahir = request.POST['tgl_lahir']
+        play = request.POST["play"]
+        height = int(request.POST['height'])
+        sex = str(request.POST['sex'])
 
+        if play == "left":
+           play_bool = False
+        else:
+           play_bool = not play_bool
+
+        if sex == 'm':
+           sex_bool = True
+        else:
+           sex_bool = False
+
+        isValid = id and nama and email and negara and tgl_lahir and play and height and sex
+        if isValid:
+            message = query(f"INSERT INTO MEMBER VALUES('{id}', '{nama}', '{email}')")
+            if "Email sudah pernah didaftarkan" in message.args[0]:
+               context = {
+                  "message": "Email sudah pernah didaftarkan"
+               }
+               return render(request, 'register-atlet.html', context)
+            query(f"INSERT INTO ATLET VALUES('{id}', '{tgl_lahir}', '{negara}', {play_bool}, '{height}', NULL, {sex_bool})")
+            return redirect("/login")
+        else:
+            context = {"message": "Mohon masukan data Anda dengan benar"}
+            return render(request, 'register-atlet.html', context)
+    else:
+        return render(request, 'register-atlet.html')
+    
+@csrf_exempt
+def register_umpire(request):
+    if request.method == 'POST':
+        id = uuid.uuid4()
+        while (id in get_uuid_existed()):
+           id = uuid.uuid4()
+        print(id)
+        nama = str(request.POST['nama'])
+        email = str(request.POST['email'])
+        negara = str(request.POST['negara'])
+        isValid = id and nama and email and negara
+
+        if isValid:
+            message = query(f"INSERT INTO MEMBER VALUES('{id}', '{nama}', '{email}')")
+            if "Email sudah pernah didaftarkan" in message.args[0]:
+               context = {
+                  "message": "Email sudah pernah didaftarkan"
+               }
+               return render(request, 'register-umpire.html', context)
+            query(f"INSERT INTO UMPIRE VALUES('{id}', '{negara}')")
+            return redirect("/login")
+        
+        else:
+            context = {"message": "Mohon masukan data Anda dengan benar"}
+            return render(request, 'register-umpire.html', context)
+    else:
+        return render(request, 'register-umpire.html')
+    
+@csrf_exempt
+def register_pelatih(request):
+    if request.method == 'POST':
+        id = uuid.uuid4()
+        while (id in get_uuid_existed()):
+           id = uuid.uuid4()
+        nama = str(request.POST['nama'])
+        email = str(request.POST['email'])
+        kategori = request.POST.getlist('kategori')
+        tgl_mulai = str(request.POST['tgl_mulai'])
+        isValid = id and nama and email and kategori and tgl_mulai
+
+        if isValid:
+            message = query(f"INSERT INTO MEMBER VALUES('{id}', '{nama}', '{email}')")
+            if "Email sudah pernah didaftarkan" in message.args[0]:
+               context = {
+                  "message": "Email sudah pernah didaftarkan"
+               }
+               return render(request, 'register-pelatih.html', context)
+            query(f"INSERT INTO PELATIH VALUES('{id}', '{tgl_mulai}')")
+
+            for k in kategori:
+               id_kategori = query(f"SELECT ID FROM SPESIALISASI WHERE SPESIALISASI='{k}';")[0]['id']
+               query(f"INSERT INTO PELATIH_SPESIALISASI VALUES('{id}', '{id_kategori}')")
+
+            return redirect("/login")
+        else:
+            context = {"message": "Mohon masukan data Anda dengan benar"}
+            return render(request, 'register-pelatih.html', context)
+    else:
+        return render(request, 'register-pelatih.html')
+  
 @csrf_exempt
 def login(request):
   next = request.GET.get("next")
@@ -77,7 +182,7 @@ def login_view(request):
 
 def logout(request):
   if not check_session(request):
-    return redirect('login/')
+    return redirect('/login')
   request.session.flush()
   request.session.clear_expired()
   return redirect('/')

@@ -1,3 +1,8 @@
+{% load static %}
+<script src="{% static 'navbar/script.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="{% static 'navbar/style.css' %}">
+
 <nav class="navbar justify-content-between" style="background-color:#5161ce" >
     <!-- Navbar content -->
     <div class="m-4">
@@ -9,7 +14,7 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="javascript:void(0);"><i class="fas fa-tachometer-alt"></i>
+                <a class="nav-link" href="/umpire"><i class="fas fa-tachometer-alt"></i>
                     Dashboard Umpire
                 </a>
             </li>
@@ -20,7 +25,7 @@
                     Atlet
                 </a>
                 <div class="dropdown-menu">
-                    <a href="#" class="dropdown-item">Daftar Atlet</a>
+                    <a href="/umpire/daftar-atlet" class="dropdown-item">Daftar Atlet</a>
                 </div>
             </li>
 
@@ -30,11 +35,11 @@
                     Ujian Kualifikasi
                 </a>
                 <div class="dropdown-menu">
-                    <a href="#" class="dropdown-item"> Buat Ujian Kualifikasi</a>
+                    <a href="/umpire/ujian-kualifikasi/buat" class="dropdown-item">Buat Ujian Kualifikasi</a>
                     <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item">List Ujian Kualifikasi</a>
+                    <a href="/umpire/ujian-kualifikasi/list" class="dropdown-item">List Ujian Kualifikasi</a>
                     <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item">Riwayat Ujian Kualifikasi</a>
+                    <a href="/umpire/ujian-kualifikasi/riwayat" class="dropdown-item">Riwayat Ujian Kualifikasi</a>
                 </div>
             </li>
 
@@ -44,14 +49,14 @@
                     Event
                 </a>
                 <div class="dropdown-menu dropdown-menu-end">
-                    <a href="#" class="dropdown-item">List Partai Kompetisi</a>
+                    <a href="/umpire/list-partai-kompetisi" class="dropdown-item">List Partai Kompetisi</a>
                 </div>
             </li>
         </ul>
     </div>
 
     <button type="button" class="btn btn-danger">
-        <a href="#" style="color:white">
+        <a href="/logout" style="color:white">
             <i class="fas fa-sign-out-alt"></i>
             Log Out
         </a>

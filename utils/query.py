@@ -14,14 +14,20 @@ try:
                         port="6346",
                         database="railway")
     # connection = psycopg2.connect(user="postgres",
-    #                     password="d2002ina",
+    #                     password="postgres",
     #                     host="localhost",
     #                     port="5432",
-    #                     database="postgres")
+    #                     database="babadu")
+    # connection = psycopg2.connect(user="postgres",
     #                     password="annisa123",
     #                     host="127.0.0.1",
     #                     port="5433",
     #                     database="postgres")
+    # connection = psycopg2.connect(user="openpg",
+    #                     password="openpgpwd",
+    #                     host="localhost",
+    #                     port="5432",
+    #                     database="babadu")    
 
     # Create a cursor to perform database operations
     connection.autocommit = True

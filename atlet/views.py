@@ -1,31 +1,32 @@
 from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from utils.query import query
 import string
 from django.views.decorators.csrf import csrf_exempt
 from django.db import DatabaseError
 
+import uuid
 
 # Create your views here.
 
-forms = {}
 
 def atletHome(request):
     nama = string.capwords(request.session['nama'])
     email = request.session['email']
-    print(nama, email)
-    id = query(f"""SELECT id FROM MEMBER
-               WHERE nama = '{nama}' AND email = '{email}'""")[0]
-    id = id['id']
-    print(id)
+    id = request.session["member_id"]
 
     result = query(f"""SELECT * FROM ATLET A
                     WHERE A.id = '{id}'""")[0]
-    print(result)
 
-    pelatih = query(f"""SELECT * FROM ATLET_PELATIH AP JOIN MEMBER M ON M.id = AP.id_pelatih
-                    WHERE AP.id_atlet = '{id}'""")[0]
-    print(pelatih)
-    pelatih = pelatih['nama']
+    pelatih = query("""SELECT * FROM ATLET_PELATIH AP 
+                    JOIN MEMBER M ON M.id = AP.id_pelatih
+                    WHERE AP.id_atlet = '{}'
+                    """.format(id))
+    
+    if len(pelatih) == 0:
+        pelatih = '-'
+    else:
+        pelatih = ', '.join([p["nama"] for p in pelatih])
                     
     if result['jenis_kelamin'] == False:
         sex = 'Perempuan'
@@ -200,36 +201,39 @@ def enrolled_partai_kompetisi(request) :
 
 
 def daftarPartaiKompetisi(request, namaStadium, namaEvent, tahunEvent):
+    user_sex = checkUserSex(request)
+
     result = query(f"""SELECT * FROM EVENT WHERE nama_event = '{namaEvent}' AND tahun = '{tahunEvent}'""")[0]
     jumlah_peserta = query(f"""SELECT COUNT(nomor_peserta) FROM PESERTA_MENDAFTAR_EVENT
-                      WHERE nama_event = '{namaEvent}' AND tahun = '{tahunEvent}'""")[0]
+                      WHERE nama_event = '{namaEvent}' AND tahun = '{tahunEvent}'""")[0]['count']
     kapasitas_stadium = query(f"""SELECT kapasitas FROM STADIUM WHERE nama = '{namaStadium}'""")[0]['kapasitas']
-    
-    print(result)
 
     list_kategori = query(f"""SELECT jenis_partai FROM PARTAI_KOMPETISI
                         WHERE nama_event = '{namaEvent}' AND tahun_event = '{tahunEvent}'""")
     print(list_kategori)
     list_partai = []
 
-    list_atlet_putra = query(f"""SELECT id_atlet FROM ATLET_KUALIFIKASI AK
+    list_atlet_putra = query(f"""SELECT nama FROM ATLET_KUALIFIKASI AK
                             JOIN ATLET A ON AK.id_atlet = A.id
+                            JOIN MEMBER M ON A.id = M.id
                             WHERE A.jenis_kelamin = 'True' AND id_atlet NOT IN
                             (SELECT id_atlet_kualifikasi
                             FROM ATLET_GANDA
                             UNION
                             SELECT id_atlet_kualifikasi_2
                             FROM ATLET_GANDA)""")
-    list_atlet_putri = query(f"""SELECT id_atlet FROM ATLET_KUALIFIKASI AK
+    list_atlet_putri = query(f"""SELECT nama FROM ATLET_KUALIFIKASI AK
                             JOIN ATLET A ON AK.id_atlet = A.id
+                            JOIN MEMBER M ON A.id = M.id
                             WHERE A.jenis_kelamin = 'False' AND id_atlet NOT IN
                             (SELECT id_atlet_kualifikasi
                             FROM ATLET_GANDA
                             UNION
                             SELECT id_atlet_kualifikasi_2
                             FROM ATLET_GANDA)""")
-    list_atlet_putra_putri = list_atlet_putri = query(f"""SELECT id_atlet FROM ATLET_KUALIFIKASI AK
+    list_atlet_putra_putri = query(f"""SELECT nama FROM ATLET_KUALIFIKASI AK
                             JOIN ATLET A ON AK.id_atlet = A.id
+                            JOIN MEMBER M ON A.id = M.id
                             WHERE id_atlet NOT IN
                             (SELECT id_atlet_kualifikasi
                             FROM ATLET_GANDA
@@ -248,6 +252,10 @@ def daftarPartaiKompetisi(request, namaStadium, namaEvent, tahunEvent):
                                 WHERE jenis_partai = 'MS' AND nama_event = '{namaEvent}'
                                 AND tahun_event = '{tahunEvent}'""")[0]
             dict_kategori['kapasitas'] = kapasitas_partai['count']
+            if user_sex == True:
+                dict_kategori['joinable'] = (dict_kategori['kapasitas'] < kapasitas_stadium)
+            else:
+                dict_kategori['joinable'] = False
             
         elif kategori['jenis_partai'] == 'WS':
             dict_kategori['jenis_partai'] = 'Tunggal Putri'
@@ -256,6 +264,10 @@ def daftarPartaiKompetisi(request, namaStadium, namaEvent, tahunEvent):
                                 WHERE jenis_partai = 'WS' AND nama_event = '{namaEvent}'
                                 AND tahun_event = '{tahunEvent}'""")[0]
             dict_kategori['kapasitas'] = kapasitas_partai['count']
+            if user_sex == False:
+                dict_kategori['joinable'] = (dict_kategori['kapasitas'] < kapasitas_stadium)
+            else:
+                dict_kategori['joinable'] = False
             
         elif kategori['jenis_partai'] == 'MD':
             dict_kategori['jenis_partai'] = 'Ganda Putra'
@@ -264,6 +276,10 @@ def daftarPartaiKompetisi(request, namaStadium, namaEvent, tahunEvent):
                                 WHERE jenis_partai = 'MD' AND nama_event = '{namaEvent}'
                                 AND tahun_event = '{tahunEvent}'""")[0]
             dict_kategori['kapasitas'] = kapasitas_partai['count']
+            if user_sex == True:
+                dict_kategori['joinable'] = (dict_kategori['kapasitas'] < kapasitas_stadium)
+            else:
+                dict_kategori['joinable'] = False
             
         elif kategori['jenis_partai'] == 'WD':
             dict_kategori['jenis_partai'] = 'Ganda Putri'
@@ -272,6 +288,10 @@ def daftarPartaiKompetisi(request, namaStadium, namaEvent, tahunEvent):
                                 WHERE jenis_partai = 'WD' AND nama_event = '{namaEvent}'
                                 AND tahun_event = '{tahunEvent}'""")[0]
             dict_kategori['kapasitas'] = kapasitas_partai['count']
+            if user_sex == False:
+                dict_kategori['joinable'] = (dict_kategori['kapasitas'] < kapasitas_stadium)
+            else:
+                dict_kategori['joinable'] = False
             
         else:
             dict_kategori['jenis_partai'] = 'Ganda Campuran'
@@ -280,6 +300,7 @@ def daftarPartaiKompetisi(request, namaStadium, namaEvent, tahunEvent):
                                 WHERE jenis_partai = 'XD' AND nama_event = '{namaEvent}'
                                 AND tahun_event = '{tahunEvent}'""")[0]
             dict_kategori['kapasitas'] = kapasitas_partai['count']
+            dict_kategori['joinable'] = (dict_kategori['kapasitas'] < kapasitas_stadium)
             
         list_partai.append(dict_kategori)
         

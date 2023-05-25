@@ -1,5 +1,6 @@
 from django.urls import path
-from atlet.views import atletHome, daftarStadium, daftarEventStadium, c_sponsor, list_sponsor, daftarPartaiKompetisi, enrolled_event, enrolled_partai_kompetisi
+from atlet.views import *
+
 app_name = 'atlet'
 
 urlpatterns = [
@@ -14,5 +15,9 @@ urlpatterns = [
 
     
 
+    path('join/', joinEvent, name='join-event'),
+    path('ujian-kualifikasi/pilih', pilih_ujian_kualifikasi, name='pilih_ujian_kualifikasi'),
+    path('ujian-kualifikasi/soal', soal_ujian_kualifikasi, name='soal_ujian_kualifikasi'),
+    path('ujian-kualifikasi/riwayat', riwayat_ujian_kualifikasi, name='riwayat_ujian_kualifikasi'),
 
 ]

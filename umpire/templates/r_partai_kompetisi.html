@@ -3,7 +3,7 @@
 
 {% block meta %}
 <title>List Partai Kompetisi</title>
-<!-- <link rel="stylesheet" href="{% static 'umpire/style.css' %}"> -->
+<link rel="stylesheet" href="{% static 'umpire/style.css' %}">
 {% endblock meta %}
 
 {% block content %}
@@ -45,9 +45,12 @@
                 <td>{{ partai.jumlah_peserta }}/{{ partai.kapasitas }}</td>
                 <td>
                   {% if partai.jumlah_peserta == partai.kapasitas %}
-                    <a href="/umpire/live-score/{{ partai.nama_event }}/{{ partai.jenis_partai }}">
-                      <button type="button" class="btn btn-primary" id="mulai">Mulai</button>
-                    </a>
+                  <a href="/umpire/live-score/{{ partai.nama_event }}/{{ partai.jenis_partai }}/{{ partai.tahun }}/{{ partai.kategori_superseries }}">
+                    <button type="button" class="btn btn-primary m-1" id="mulai">Mulai</button>
+                  </a>
+                  <a href="/umpire/hasil-pertandingan?nama_event={{ partai.nama_event|urlencode }}&tahun={{ partai.tahun|urlencode }}&jenis_partai={{ partai.jenis_partai|urlencode }}">
+                    <button type="button" class="btn btn-primary">Hasil Pertandingan</button>
+                  
                   {% endif %}
                 </td>
               </tr>

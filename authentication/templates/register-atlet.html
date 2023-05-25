@@ -12,6 +12,11 @@
   <div class="title indigo">Register - Atlet</div>
   <a href="/register/">Ganti role</a>
   <div class="mt-3">
+    {% if message %}
+    <div class="alert alert-danger" role="alert">
+        {{ message }}
+    </div>
+    {% endif %}
       <form method="POST" action="">
           <!-- {% csrf_token %} -->
           <table class="m-auto text-left">
@@ -20,7 +25,7 @@
                 Nama:
               </td>
               <td class="form">
-                <input type="text" name="nama" id="nama">
+                <input type="text" name="nama" id="nama" required>
               </td>
             </tr>
 
@@ -29,7 +34,7 @@
                 Email:
               </td>
               <td class="form">
-                <input type="email" name="email" id="email">
+                <input type="email" name="email" id="email" required>
               </td>  
             </tr>
 
@@ -38,7 +43,7 @@
                 Negara:
               </td>
               <td class="form">
-                <input type="text" name="negara" id="negara">
+                <input type="text" name="negara" id="negara" required>
               </td>  
             </tr>
 
@@ -47,7 +52,7 @@
                 Tanggal lahir:
               </td>
               <td class="form">
-                <input type="date" name="tgl_lahir" id="tgl_lahir">
+                <input type="date" name="tgl_lahir" id="tgl_lahir" required>
               </td>  
             </tr>
 
@@ -66,7 +71,7 @@
                 Tinggi badan:
               </td>
               <td class="form">
-                <input type="number" name="height" id="height">
+                <input type="number" name="height" id="height" required>
               </td>  
             </tr>
 
@@ -75,7 +80,7 @@
                 Jenis Kelamin:
               </td>
               <td class="form">
-                  <select name="jk" id="jk">
+                  <select name="sex" id="sex">
                       <option disabled selected>Pilih...</option>
                       <option value="m">Laki-laki</option>
                       <option value="f">Perempuan</option>
@@ -84,9 +89,9 @@
             </tr>
 
           </table>
+          <button type="submit" class="btn btn-primary submit_btn mt-3">Register</button>
         </form>
 
-        <button type="button" class="btn btn-primary submit_btn mt-3">Register</button>
 
       </div>
       <div class="my-5 small-text">
