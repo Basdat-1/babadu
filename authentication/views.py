@@ -56,7 +56,7 @@ def register_atlet(request):
         if play == "left":
            play_bool = False
         else:
-           play_bool = not play_bool
+           play_bool = True
 
         if sex == 'm':
            sex_bool = True
