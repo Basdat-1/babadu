@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
 from utils.query import query
+from django.views.decorators.csrf import csrf_exempt
 import string
 import uuid
 
@@ -333,8 +334,45 @@ def riwayat_ujian_kualifikasi(request):
 
     return render(request, "riwayat_ujian_kualifikasi.html", context)
 
-# @login_required
+@csrf_exempt
 def soal_ujian_kualifikasi(request):
+    id = request.session['member_id']
+    # status = request.session['status']
+    
+    batch = request.session['batch']
+    tempat = request.session['tempat']
+    tanggal = request.session['tanggal']
+    tahun = request.session['tahun']
+    print(id)
+
+    if request.method == 'POST':
+      
+        question_1 = request.POST.get('1', '')
+        question_2 = request.POST.get('2', '')
+        question_3 = request.POST.get('3', '')
+        question_4 = request.POST.get('4', '')
+        question_5 = request.POST.get('5', '')
+
+        score = 0
+        if question_1 == 'true':
+            score += 1
+        if question_2 == 'true':
+            score += 1
+        if question_3 == 'true':
+            score += 1
+        if question_4 == 'true':
+            score += 1
+        if question_5 == 'true':
+            score += 1
+        
+        if score >= 4:
+            query(f"""INSERT INTO atlet_nonkualifikasi_ujian_kualifikasi
+                      VALUES ('{id}', '{tahun}', '{batch}', '{tempat}', '{tanggal}', TRUE);""")
+            print("congrats u pass!")
+        else:
+            print("pls retake the test..")
+        print(score)
+        return redirect("/atlet/ujian-kualifikasi/riwayat")
     return render(request, "soal_ujian_kualifikasi.html")
     
 def getLatestNomorPeserta():
