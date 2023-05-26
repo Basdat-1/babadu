@@ -339,12 +339,6 @@ def riwayat_ujian_kualifikasi(request):
 @csrf_exempt
 def soal_ujian_kualifikasi(request):
     id = request.session['member_id']
-    # status = request.session['status']
-    
-    batch = request.session['batch']
-    tempat = request.session['tempat']
-    tanggal = request.session['tanggal']
-    tahun = request.session['tahun']
     print(id)
 
     if request.method == 'POST':
@@ -368,8 +362,15 @@ def soal_ujian_kualifikasi(request):
             score += 1
         
         if score >= 4:
-            query(f"""INSERT INTO atlet_nonkualifikasi_ujian_kualifikasi
-                      VALUES ('{id}', '{tahun}', '{batch}', '{tempat}', '{tanggal}', TRUE);""")
+            atlet = query(f"""SELECT * FROM ATLET_NONKUALIFIKASI_UJIAN_KUALIFIKASI
+                              WHERE ID_ATLET='{id}'""")
+            print(atlet)
+            print(atlet.tahun)
+            query(f"""UPDATE atlet_nonkualifikasi_ujian_kualifikasi
+                      SET HASIL_LULUS = TRUE
+                      WHERE ID_ATLET = '{atlet.id_atlet}' AND
+                      TAHUN = '{atlet.tahun}' AND BATCH = '{atlet.batch}' AND
+                      TEMPAT = '{atlet.tempat}' AND TANGGAL = '{atlet.tanggal}';""")
             print("congrats u pass!")
         else:
             print("pls retake the test..")
