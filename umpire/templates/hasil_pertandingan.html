@@ -35,37 +35,37 @@
               </tr>
           </thead>
           <tbody>
-              {% if juara_1 %}
-              <tr>
-                  <td>Juara 1</td>
+            <tr>
+              <td>Juara 1</td>
+                  {% if juara_1 %}
                   <td>{{ juara_1.nama1 }}</td>  
                   <td>{{ juara_1.nama2 }}</td>  
+                  {% endif %}
                 </tr>
-                {% endif %}
                 <tr>
+                  <td>Juara 2</td>
                   {% if juara_2 %}
-                    <td>Juara 2</td>
                     <td>{{ juara_2.nama1 }}</td>
                     <td>{{ juara_2.nama2 }}</td>
+                    {% endif %}
                 </tr>
-                {% endif %}
-                {% if juara_2 %}
                 <tr>
-                    <td>Juara 3</td>
+                  <td>Juara 3</td>
+                  {% if juara_3 %}
                     <td>{{ juara_3.nama1 }}</td>
                     <td>{{ juara_3.nama2 }}</td>
+                    {% endif %}
                 </tr>
-                {% endif %}
-                {% if semifinal %}
                 <tr>
                   <td>Semifinal</td>
+                  {% if semifinal %}
                   <td>{{ semifinal.nama1 }}</td>
                   <td>{{ semifinal.nama2 }}</td>
+                  {% endif %}
               </tr>
-              {% endif %}
               {% if perempat_final %}
               <tr>
-                  <td rowspan="4">Perempat Final</td>
+                  <td rowspan="{{ perempat_final | length }}">Perempat Final</td>
                   <td>{{ perempat_final.0.nama1 }}</td>
                   <td>{{ perempat_final.0.nama2 }}</td>
               </tr>
@@ -78,7 +78,7 @@
             {% endif %}
             {% if jumlah_peserta > 8 %}
               <tr>
-                  <td rowspan="4">R16</td>
+                  <td rowspan="{{ r16 | length }}">R16</td>
                   <td>{{ r16.0.nama1 }}</td>
                   <td>{{ r16.0.nama2 }}</td>
               </tr>
@@ -91,7 +91,7 @@
             {% endif %}
             {% if jumlah_peserta > 16 %}
               <tr>
-                  <td rowspan="4">R32</td>
+                  <td rowspan="{{ r32 | length }}">R32</td>
                   <td>{{ r32.0.nama1 }}</td>
                   <td>{{ r32.0.nama2 }}</td>
               </tr>

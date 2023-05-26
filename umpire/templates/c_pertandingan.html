@@ -29,6 +29,7 @@
           <div class="col-md-6 text-center mb-5">
             <h2 class="heading-section">Live Score Pertandingan {{namaEvent}}</h2>
             <h3>Partai {{jenisPartai}}</h3>
+            <h3 class="kategori">Kategori {{kategori}}</h3>
           </div>
         </div>
      </div>
@@ -40,7 +41,7 @@
                     <div class="row justify-content-center">
                         <div class="col-md-6 text-center mb-5">
                             
-                            <h5 style="text-align: center" class="card-title">Pertandingan {{ jenis_pertandingan }}</h5>
+                            <h5 style="text-align: center" class="card-title"></h5>
                             <div id="stopwatch">00:00:00.000</div>
                             <button id="startBtn" class="btn btn-primary">Start</button>
                             <button id="stopBtn" class="btn btn-danger">Stop</button>
@@ -86,6 +87,7 @@
                     </table>
 
                     <button id="btnNext" class="btn btn-primary">NEXT</button>
+                    <button id="btnSave" class="btn btn-primary">SAVE</button>
                 </div>
             </div>
         </div>
@@ -115,6 +117,20 @@
             }
             timPertandingan.score = newScore
         }
+
+        $(document).ready(function() {
+            // Mendapatkan jumlah baris dalam tabel
+            var rowCount = $('.data-pertandingan').length;
+
+            // Menyembunyikan tombol "Simpan Poin" jika jumlah baris lebih dari 1
+            if (rowCount > 1) {
+                $('#btnNext').show();
+                $('#btnSave').hide();
+            } else {
+                $('#btnNext').hide();
+                $('#btnSave').show();
+            }
+        });
 
         $(document).ready(function() {
             var startTime, elapsedTimeMinute = 0;
@@ -158,25 +174,6 @@
                 return value.toString().padStart(length, "0");
             }
 
-            function saveStopwatch(time) {
-            //     $.ajax({
-            //         type: 'POST',
-            //         url: "/umpire/save_stopwatch",
-            //         headers: {'X-CSRFToken': csrftoken},
-            //         data: {
-            //             'elapsed_time': time
-            //         },
-            //         success: function(response) {
-            //             console.log(response);
-            //             // Lakukan tindakan setelah berhasil menyimpan stopwatch
-            //         },
-            //         error: function(xhr, textStatus, error) {
-            //             console.log(xhr.responseText);
-            //             // Lakukan tindakan jika terjadi kesalahan saat menyimpan stopwatch
-            //         }
-            //     });
-            }
-
             $("#startBtn").click(function() {
                 startStopwatch();
             });
@@ -184,6 +181,27 @@
             $("#stopBtn").click(function() {
                 stopStopwatch();
             });
+
+            $(document).ready(function() {
+                var rowCount = $('.data-pertandingan').length;
+                var jenisPertandingan;
+
+                if (rowCount === 16) {
+                    jenisPertandingan = 'r32';
+                } else if (rowCount === 8) {
+                    jenisPertandingan = 'r16';
+                } else if (rowCount === 4) {
+                    jenisPertandingan = 'PEREMPAT FINAL';
+                } else if (rowCount === 2) {
+                    jenisPertandingan = 'SEMIFINAL';
+                } else if (rowCount === 1) {
+                    jenisPertandingan = 'FINAL';
+                }
+
+                // Menampilkan jenis_pertandingan
+                $('.card-title').text('Live Score Pertandingan ' + jenisPertandingan);
+            });
+
 
             $("#btnNext").click(function () {
                 const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
@@ -210,6 +228,7 @@
                         'tahun_event': '{{ tahun }}',
                         'jenis_partai': '{{ jenisPartai }}',
                         'durasi': elapsedTimeMinute,
+                        'kategori': '{{ kategori }}',
                         'data_pertandingan': dataPertandingan,
                     };
 
@@ -223,15 +242,66 @@
                         console.log(response);
                         const nextBabak = response.next_babak;
                         location.href = 
-                            `/umpire/live-score/${dataPost.nama_event}/${dataPost.jenis_partai}/${dataPost.tahun_event}?jenisBabak=${nextBabak}`
+                            `/umpire/live-score/${dataPost.nama_event}/${dataPost.jenis_partai}/${dataPost.tahun_event}/${dataPost.kategori}?jenisBabak=${nextBabak}`
 
-                        // Lakukan tindakan setelah berhasil menyimpan stopwatch
                     },
                     error: function(xhr, textStatus, error) {
                         console.log(xhr.responseText);
-                        // Lakukan tindakan jika terjadi kesalahan saat menyimpan stopwatch
+                       
                     }
                 });
+            })
+
+            $("#btnSave").click(function () {
+                const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                const padStart2 = (data) => data.toString().padStart(2, "0") 
+                const startDate = startTime.getFullYear() + "-" + padStart2(startTime.getMonth() + 1) + "-" + padStart2(startTime.getDate())
+                const startTimeOnly = padStart2(startTime.getHours()) + ":" + padStart2(startTime.getMinutes()) + ":" + padStart2(startTime.getSeconds())
+
+                for (let i = 0; i < dataPertandingan.length; i++) {
+                    const pertandingan = dataPertandingan[i]
+                    if ((pertandingan.tim_1?.score || 0) > (pertandingan.tim_2?.score || 0)) {
+                        pertandingan.tim_1.is_win = true
+                        pertandingan.tim_2.is_win = false
+                    } else {
+                        pertandingan.tim_2.is_win = true
+                        pertandingan.tim_1.is_win = false
+                    }
+                }
+
+                const dataPost = {
+                        'tanggal_mulai': startDate,
+                        'waktu_mulai': startTimeOnly,
+                        'jenis_babak': '{{ jenisBabak }}',
+                        'nama_event': '{{ namaEvent }}',
+                        'tahun_event': '{{ tahun }}',
+                        'jenis_partai': '{{ jenisPartai }}',
+                        'durasi': elapsedTimeMinute,
+                        'kategori': '{{ kategori }}',
+                        'data_pertandingan': dataPertandingan,
+                    };
+
+                    $("#btnSave").click(function () {
+        // ...
+
+                    $.ajax({
+                        type: 'POST',
+                        url: "/umpire/save_final",
+                        contentType: 'application/json; charset=utf-8',
+                        headers: {'X-CSRFToken': csrftoken},
+                        data: JSON.stringify(dataPost),
+                        success: function(response) {
+                            console.log(response);
+                            const nextBabak = response.next_babak;
+
+                            // Redirect ke halaman hasil_pertandingan.html dengan menyertakan parameter nextBabak
+                            window.location.href = "/umpire/hasil-pertandingan?nama_event={{ namaEvent|urlencode }}&tahun={{ tahun|urlencode }}&jenis_partai={{ jenisPartai|urlencode }}";
+                        },
+                        error: function(xhr, textStatus, error) {
+                            console.log(xhr.responseText);
+                        }
+                        });
+                    });
             })
         });
     </script>

@@ -2,6 +2,7 @@ import uuid
 from django.shortcuts import render, redirect
 from utils.query import query
 from django.views.decorators.csrf import csrf_exempt
+from psycopg2.errors import RaiseException
 
 def index(request):
     return render(request, 'index.html')
@@ -55,7 +56,7 @@ def register_atlet(request):
         if play == "left":
            play_bool = False
         else:
-           play_bool = not play_bool
+           play_bool = True
 
         if sex == 'm':
            sex_bool = True
@@ -64,11 +65,13 @@ def register_atlet(request):
 
         isValid = id and nama and email and negara and tgl_lahir and play and height and sex
         if isValid:
-            query(f"INSERT INTO MEMBER VALUES('{id}', '{nama}', '{email}')")
+            message = query(f"INSERT INTO MEMBER VALUES('{id}', '{nama}', '{email}')")
+            if type(message) == RaiseException:
+               context = {
+                  "message": "Email sudah pernah didaftarkan"
+               }
+               return render(request, 'register-atlet.html', context)
             query(f"INSERT INTO ATLET VALUES('{id}', '{tgl_lahir}', '{negara}', {play_bool}, '{height}', NULL, {sex_bool})")
-            atlet_non_kualifikasi = query(f"INSERT INTO ATLET_NON_KUALIFIKASI VALUES('{id}')")
-            print(atlet_non_kualifikasi)
-
             return redirect("/login")
         else:
             context = {"message": "Mohon masukan data Anda dengan benar"}
@@ -89,7 +92,12 @@ def register_umpire(request):
         isValid = id and nama and email and negara
 
         if isValid:
-            query(f"INSERT INTO MEMBER VALUES('{id}', '{nama}', '{email}')")
+            message = query(f"INSERT INTO MEMBER VALUES('{id}', '{nama}', '{email}')")
+            if type(message) == RaiseException:
+               context = {
+                  "message": "Email sudah pernah didaftarkan"
+               }
+               return render(request, 'register-umpire.html', context)
             query(f"INSERT INTO UMPIRE VALUES('{id}', '{negara}')")
             return redirect("/login")
         
@@ -112,7 +120,12 @@ def register_pelatih(request):
         isValid = id and nama and email and kategori and tgl_mulai
 
         if isValid:
-            query(f"INSERT INTO MEMBER VALUES('{id}', '{nama}', '{email}')")
+            message = query(f"INSERT INTO MEMBER VALUES('{id}', '{nama}', '{email}')")
+            if type(message) == RaiseException:
+               context = {
+                  "message": "Email sudah pernah didaftarkan"
+               }
+               return render(request, 'register-pelatih.html', context)
             query(f"INSERT INTO PELATIH VALUES('{id}', '{tgl_mulai}')")
 
             for k in kategori:
@@ -170,7 +183,7 @@ def login_view(request):
 
 def logout(request):
   if not check_session(request):
-    return redirect('login/')
+    return redirect('/login')
   request.session.flush()
   request.session.clear_expired()
   return redirect('/')
