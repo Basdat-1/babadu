@@ -2,6 +2,7 @@ import uuid
 from django.shortcuts import render, redirect
 from utils.query import query
 from django.views.decorators.csrf import csrf_exempt
+from psycopg2.errors import RaiseException
 
 def index(request):
     return render(request, 'index.html')
@@ -65,7 +66,7 @@ def register_atlet(request):
         isValid = id and nama and email and negara and tgl_lahir and play and height and sex
         if isValid:
             message = query(f"INSERT INTO MEMBER VALUES('{id}', '{nama}', '{email}')")
-            if "Email sudah pernah didaftarkan" in message.args[0]:
+            if type(message) == RaiseException:
                context = {
                   "message": "Email sudah pernah didaftarkan"
                }
@@ -92,7 +93,7 @@ def register_umpire(request):
 
         if isValid:
             message = query(f"INSERT INTO MEMBER VALUES('{id}', '{nama}', '{email}')")
-            if "Email sudah pernah didaftarkan" in message.args[0]:
+            if type(message) == RaiseException:
                context = {
                   "message": "Email sudah pernah didaftarkan"
                }
@@ -120,7 +121,7 @@ def register_pelatih(request):
 
         if isValid:
             message = query(f"INSERT INTO MEMBER VALUES('{id}', '{nama}', '{email}')")
-            if "Email sudah pernah didaftarkan" in message.args[0]:
+            if type(message) == RaiseException:
                context = {
                   "message": "Email sudah pernah didaftarkan"
                }
