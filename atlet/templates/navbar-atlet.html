@@ -33,14 +33,23 @@
             </li>
 
             <li class="nav-item dropdown ms-auto">
+                {% if kualifikasi == 'Non-Qualified' %}
+                <a href="#" class="nav-link">
+                    <i class="fa fa-calendar"></i>
+                    Event
+                </a>                
+                {% else %}
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                     <i class="fa fa-calendar"></i>
                     Event
                 </a>
+                {% endif %}
                 <div class="dropdown-menu dropdown-menu-end">
                     <a href="/atlet/daftar-event/stadium" class="dropdown-item">Daftar Event</a>
                     <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item">Enrolled Event</a>
+                    <a href="/atlet/enrolled-event/" class="dropdown-item">Enrolled Event</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="/atlet/enrolled-partai-kompetisi-event/" class="dropdown-item">Enrolled Partai Kompetisi Event</a>
                 </div>
             </li>
 
@@ -50,9 +59,9 @@
                     Sponsor
                 </a>
                 <div class="dropdown-menu dropdown-menu-end">
-                    <a href="#" class="dropdown-item">Daftar Sponsor</a>
+                    <a href="/atlet/c-sponsor" class="dropdown-item">Daftar Sponsor</a>
                     <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item">List Sponsor</a>
+                    <a href="/atlet/list-sponsor/" class="dropdown-item">List Sponsor</a>
                 </div>
             </li>
         </ul>
