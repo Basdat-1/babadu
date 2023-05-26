@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
 from utils.query import query
+from django.views.decorators.csrf import csrf_exempt
 import string
 import uuid
 
@@ -335,8 +336,46 @@ def riwayat_ujian_kualifikasi(request):
 
     return render(request, "riwayat_ujian_kualifikasi.html", context)
 
-# @login_required
+@csrf_exempt
 def soal_ujian_kualifikasi(request):
+    id = request.session['member_id']
+    print(id)
+
+    if request.method == 'POST':
+      
+        question_1 = request.POST.get('1', '')
+        question_2 = request.POST.get('2', '')
+        question_3 = request.POST.get('3', '')
+        question_4 = request.POST.get('4', '')
+        question_5 = request.POST.get('5', '')
+
+        score = 0
+        if question_1 == 'true':
+            score += 1
+        if question_2 == 'true':
+            score += 1
+        if question_3 == 'true':
+            score += 1
+        if question_4 == 'true':
+            score += 1
+        if question_5 == 'true':
+            score += 1
+        
+        if score >= 4:
+            atlet = query(f"""SELECT * FROM ATLET_NONKUALIFIKASI_UJIAN_KUALIFIKASI
+                              WHERE ID_ATLET='{id}'""")
+            print(atlet)
+            print(atlet.tahun)
+            query(f"""UPDATE atlet_nonkualifikasi_ujian_kualifikasi
+                      SET HASIL_LULUS = TRUE
+                      WHERE ID_ATLET = '{atlet.id_atlet}' AND
+                      TAHUN = '{atlet.tahun}' AND BATCH = '{atlet.batch}' AND
+                      TEMPAT = '{atlet.tempat}' AND TANGGAL = '{atlet.tanggal}';""")
+            print("congrats u pass!")
+        else:
+            print("pls retake the test..")
+        print(score)
+        return redirect("/atlet/ujian-kualifikasi/riwayat")
     return render(request, "soal_ujian_kualifikasi.html")
     
 def getLatestNomorPeserta():

@@ -1,8 +1,131 @@
 {% extends 'base.html' %}
 {% load static %}
 
-
+{% block meta %}
+<title>Tes Ujian Kualifikasi</title>
+<link rel="stylesheet" href="{% static 'auth-dashboard/style.css' %}">
+{% endblock meta %}
 
 {% block content %}
 {% include "navbar-atlet.html" %}
+<div class="container">
+    <form method="POST">
+        {% csrf_token %}
+        <div class="title indigo text-center mt-5">Pertanyaan Kualifikasi</div>
+        <br>
+
+        <label class="questions">1. Apa nama organisasi persatuan badminton?</label>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="1" id="flexRadioDefault1" value="false">
+            <label class="form-check-label" for="flexRadioDefault1">
+                BABIBU
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="1" id="flexRadioDefault2" value="true">
+            <label class="form-check-label" for="flexRadioDefault2">
+                BABADU
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="1" id="flexRadioDefault3" value="false">
+            <label class="form-check-label" for="flexRadioDefault3">
+                BOBOHO
+            </label>
+        </div>
+        <br>
+
+        <label class="questions">2. Jumlah game maksimal dalam satu match?</label>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="2" id="flexRadioDefault1" value="false">
+            <label class="form-check-label" for="flexRadioDefault1">
+                5
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="2" id="flexRadioDefault2" value="false">
+            <label class="form-check-label" for="flexRadioDefault2">
+                1
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="2" id="flexRadioDefault3" value="true">
+            <label class="form-check-label" for="flexRadioDefault3">
+                3
+            </label>
+        </div>
+        <br>
+    
+        <label class="questions">3. Jumlah skor maksimal dalam satu game?</label>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="3" id="flexRadioDefault1" value="true">
+            <label class="form-check-label" for="flexRadioDefault1">
+                21
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="3" id="flexRadioDefault2" value="false">
+            <label class="form-check-label" for="flexRadioDefault2">
+                10
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="3" id="flexRadioDefault3" value="false">
+            <label class="form-check-label" for="flexRadioDefault3">
+                11
+            </label>
+        </div>
+        <br>
+    
+        <label class="questions">4. Jika skor suatu pertandingan seimbang, 20-20, disebut apa kondisi ini?</label>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="4" id="flexRadioDefault1" value="false">
+            <label class="form-check-label" for="flexRadioDefault1">
+              Rematch
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="4" id="flexRadioDefault2" value="false">
+            <label class="form-check-label" for="flexRadioDefault2">
+                Fair
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="4" id="flexRadioDefault3" value="true">
+            <label class="form-check-label" for="flexRadioDefault3">
+                Deuce
+            </label>
+        </div>
+        <br>
+    
+        <label class="questions">5. Siapa yang pernah menang medali emas di Olimpiade, kecuali?</label>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="5" id="flexRadioDefault1" value="false">
+            <label class="form-check-label" for="flexRadioDefault1">
+                Greysia Polii & Apriyani Rahayu (Tokyo, 2020)
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="5" id="flexRadioDefault2" value="false">
+            <label class="form-check-label" for="flexRadioDefault2">
+                Taufik Hidayat (Athena, 2004)
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="5" id="flexRadioDefault3" value="true">
+            <label class="form-check-label" for="flexRadioDefault3">
+                Anthony Sinisuka Ginting (Tokyo, 2020)
+            </label>
+        </div>
+        <br>
+    
+        <div class="pb-3 pt-4 d-flex justify-content-center">
+            <a href="/atlet/ujian-kualifikasi/riwayat">
+                <button type="submit" class="btn btn-primary submit_btn">Submit</button>
+            </a>
+        </div>
+
+    </form>
+</div>
+
 {% endblock content %}
