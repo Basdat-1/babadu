@@ -1,12 +1,11 @@
-{% extends 'base.html' %}
-{% load static %}
-
+{% extends 'base.html' %} 
+{% load static %} 
 {% block meta %}
 <title>Form Partai Kompetisi</title>
-<link rel="stylesheet" href="{% static 'auth-dashboard/style.css' %}">
-{% endblock meta %}
+<link rel="stylesheet" href="{% static 'auth-dashboard/style.css' %}" />
+{% endblock meta %} 
 
-{% block content %}
+{% block content %} 
 {% include "navbar-atlet.html" %}
 <section class="ftco-section">
   <div class="container">
@@ -20,140 +19,153 @@
       </div>
     </div>
     <div class="card text-center">
-        <div class="card-header">
-          Detailed Event
-        </div>
-        <div class="card-body">
-          <h5 class="card-title">{{ result.nama_event }}</h5>
-          <p class="card-text">Total Hadiah: {{ result.total_hadiah }}</p>
-          <p class="card-text">Tanggal Mulai: {{ result.tgl_mulai }}</p>
-          <p class="card-text">Tanggal Selesai: {{ result.tgl_selesai }}</p>
-          <p class="card-text">Kategori: {{ result.kategori_superseries }}</p>
-          <p class="card-text">Kapasitas: {{ jumlah_peserta }}/{{ kapasitas_stadium }}</p>
-          <p class="card-text">Stadium: {{ result.nama_stadium }}</p>
-          <p class="card-text">Negara: {{ result.negara }}</p>
-        </div>
+      <div class="card-header">Detailed Event</div>
+      <div class="card-body">
+        <h5 class="card-title">{{ result.nama_event }}</h5>
+        <p class="card-text">Total Hadiah: {{ result.total_hadiah }}</p>
+        <p class="card-text">Tanggal Mulai: {{ result.tgl_mulai }}</p>
+        <p class="card-text">Tanggal Selesai: {{ result.tgl_selesai }}</p>
+        <p class="card-text">Kategori: {{ result.kategori_superseries }}</p>
+        <p class="card-text">
+          Kapasitas: {{ jumlah_peserta }}/{{ kapasitas_stadium }}
+        </p>
+        <p class="card-text">Stadium: {{ result.nama_stadium }}</p>
+        <p class="card-text">Negara: {{ result.negara }}</p>
       </div>
+    </div>
   </div>
 </section>
 
-<br>
-<br>
+<br />
+<br />
 
 <section class="ftco-section">
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-md-6 text-center mb-5">
-          <h5 class="heading-section">Pilih Kategori</h5>
-        </div>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 text-center mb-5">
+        <h5 class="heading-section">Pilih Kategori</h5>
       </div>
-      <div class="row">
-        <div class="col-md-12">
-          <div class="table-wrap">
-            <table class="table">
-              <thead class="thead-primary">
-                  <tr>
-                      <th>No.</th>
-                      <th>Kategori</th>
-                      <th>Partner</th>
-                      <th>Kapasitas</th>
-                      <th></th>
-                  </tr>
-              </thead>
-              <tbody>
-                  {% for item in list_partai %}
-                  <tr>
-                      <th scope="row">{{ forloop.counter }}</th>
-                      <td>{{ item.jenis_partai }}</td>
-                      <td>
-                        {% if item.list_atlet %}
-                          {% if item.list_atlet == '-' %}
-                              {{ item.list_atlet }}
-                          {% else %}
-                            <div class="btn-group">
-                              <button type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="dropdown-button">
-                                  PILIH PARTNER
-                              </button>
-                              <div class="dropdown-menu">
-                                  {% for atlet in item.list_atlet %}
-                                      <a class="dropdown-item" href="#" data-value="{{ atlet.nama }}">{{ atlet.nama }}</a>
-                                  {% endfor %}
-                              </div>
-                            </div>                   
-                          {% endif %}
-                        {% else %}
-                            <!-- Handle case when list_atlet is empty -->
-                            <p>No partner available</p>
-                        {% endif %}
-                      </td>
-                      <td>
-                        {{ item.kapasitas}}/{{ kapasitas_stadium}}
-                      </td>
-                      <td>
-                        {% if item.joinable %}
-                            <a href="#" class="join-link" data-jenis-partai="{{ item.jenis_partai }}">
-                                <button type="button" class="btn btn-primary">Join</button>
-                            </a>
-                        {% endif %}
-                    </td>                    
-                  </tr>
-                  {% endfor %}
-              </tbody>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table-wrap">
+          <table class="table">
+            <thead class="thead-primary">
+              <tr>
+                <th>No.</th>
+                <th>Kategori</th>
+                <th>Partner</th>
+                <th>Kapasitas</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in list_partai %}
+              <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ item.jenis_partai }}</td>
+                <td>
+                  {% if item.list_atlet %} 
+                    {% if item.list_atlet == '-' %} 
+                    {{ item.list_atlet }}
+                    {% else %}
+                    <div class="btn-group">
+                      <button
+                        type="button"
+                        class="btn btn-outline-primary dropdown-toggle"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        id="dropdown-button"
+                      >
+                        PILIH PARTNER
+                      </button>
+                      <div class="dropdown-menu">
+                        {% for atlet in item.list_atlet %}
+                        <a
+                          class="dropdown-item"
+                          href="#"
+                          data-value="{{ atlet.nama }}"
+                          >{{ atlet.nama }}</a
+                        >
+                        {% endfor %}
+                    </div>
+                    </div>
+                    {% endif %} 
+                  {% else %}
+                  <!-- Handle case when list_atlet is empty -->
+                  <p>No partner available</p>
+                  {% endif %}
+                </td>
+                <td>{{ item.kapasitas}}/{{ kapasitas_stadium}}</td>
+                <td>
+                  {% if item.joinable %}
+                  <a
+                    href="#"
+                    class="join-link"
+                    data-jenis-partai="{{ item.jenis_partai }}"
+                  >
+                    <button type="button" class="btn btn-primary">Join</button>
+                  </a>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
           </table>
-          
-          </div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script>
-    $(document).ready(function() {
-    $('.dropdown-item').on('click', function(event) {
-        event.preventDefault(); // Prevent the default action of the hyperlink
-        var selectedValue = $(this).data('value');
-        var jenisPartai = $(this).data('jenis-partai');
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $(".dropdown-item").on("click", function (event) {
+      event.preventDefault(); // Prevent the default action of the hyperlink
+      var selectedValue = $(this).data("value");
+      var jenisPartai = $(this).data("jenis-partai");
 
-        console.log('Selected value:', selectedValue);
-        console.log('Jenis partai:', jenisPartai);
-        
-        // Update the dropdown button text with the selected value
-        $('#dropdown-button').text(selectedValue);
-        
-        // Store the selected value in a data attribute of the join link
-        $('.join-link').data('partner', selectedValue);
-        
-        // Update the URL with the selected value
-        var joinLink = "{% url 'atlet:join-event' %}?nama_stadium={{ result.nama_stadium|urlencode }}&nama_event={{ result.nama_event|urlencode }}&tahun={{ result.tahun|urlencode }}&jenis_partai=";
-        joinLink += encodeURIComponent(jenisPartai);
-        $('.join-link').attr('href', joinLink);
+      console.log("Selected value:", selectedValue);
+      console.log("Jenis partai:", jenisPartai);
+
+      // Update the dropdown button text with the selected value
+      $("#dropdown-button").text(selectedValue);
+
+      // Store the selected value in a data attribute of the join link
+      $(".join-link").data("partner", selectedValue);
+
+      // Update the URL with the selected value
+      var joinLink =
+        "{% url 'atlet:join-event' %}?nama_stadium={{ result.nama_stadium|urlencode }}&nama_event={{ result.nama_event|urlencode }}&tahun={{ result.tahun|urlencode }}&jenis_partai=";
+      joinLink += encodeURIComponent(jenisPartai);
+      $(".join-link").attr("href", joinLink);
     });
 
-    $('.join-link').on('click', function(event) {
-        event.preventDefault(); // Prevent the default action of the hyperlink
-        
-        // Retrieve the jenis_partai value from the join link
-        var jenisPartai = $(this).data('jenis-partai');
-        
-        console.log('Jenis partai:', jenisPartai);
-        
-        // Retrieve the partner value from the join link
-        var partner = $(this).data('partner');
-        
-        console.log('Partner:', partner);
-        
-        // Retrieve other necessary data for the join link
-        var joinLink = "{% url 'atlet:join-event' %}?nama_stadium={{ result.nama_stadium|urlencode }}&nama_event={{ result.nama_event|urlencode }}&tahun={{ result.tahun|urlencode }}&jenis_partai=";
-        joinLink += encodeURIComponent(jenisPartai);
-        joinLink += "&partner=" + encodeURIComponent(partner);
-        
-        // Redirect to the join link URL
-        window.location.href = joinLink;
-    });
-});
+    $(".join-link").on("click", function (event) {
+      event.preventDefault(); // Prevent the default action of the hyperlink
 
+      // Retrieve the jenis_partai value from the join link
+      var jenisPartai = $(this).data("jenis-partai");
+
+      console.log("Jenis partai:", jenisPartai);
+
+      // Retrieve the partner value from the join link
+      var partner = $(this).data("partner");
+
+      console.log("Partner:", partner);
+
+      // Retrieve other necessary data for the join link
+      var joinLink =
+        "{% url 'atlet:join-event' %}?nama_stadium={{ result.nama_stadium|urlencode }}&nama_event={{ result.nama_event|urlencode }}&tahun={{ result.tahun|urlencode }}&jenis_partai=";
+      joinLink += encodeURIComponent(jenisPartai);
+      joinLink += "&partner=" + encodeURIComponent(partner);
+
+      // Redirect to the join link URL
+      window.location.href = joinLink;
+    });
+  });
 </script>
-
 
 {% endblock content %}

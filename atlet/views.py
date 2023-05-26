@@ -1,6 +1,8 @@
+from logging import raiseExceptions
 from django.shortcuts import render
 from django.shortcuts import redirect
 from utils.query import query
+from django.views.decorators.csrf import csrf_exempt
 import string
 import uuid
 
@@ -275,9 +277,16 @@ def joinEvent(request):
         jenis_partai = convertJenisPartaiName(jenis_partai)
         daftar_partai_peserta_kompetisi = query(f"""INSERT INTO PARTAI_PESERTA_KOMPETISI VALUES (
                                                 '{jenis_partai}', '{nama_event}', {tahun}, {nomor_peserta})""")
-        print(daftar_partai_peserta_kompetisi)
-
-    return redirect('atlet:home')
+    
+        message = daftar_partai_peserta_kompetisi
+        print(message)
+        if isinstance(message, Exception):
+            print("ERROR")
+        else:
+            daftar_event = query(f"""INSERT INTO PESERTA_MENDAFTAR_EVENT VALUES ({nomor_peserta}, '{nama_event}', {tahun})""")
+            print(daftar_event)
+                
+        return redirect('atlet:home')
 
 def getIdUser(request):
     nama = string.capwords(request.session['nama'])
