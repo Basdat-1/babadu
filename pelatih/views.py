@@ -3,7 +3,6 @@ from utils.query import query
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 
-
 # Create your views here.
 def dashboard_pelatih(request):
     nama = request.session["nama"]
