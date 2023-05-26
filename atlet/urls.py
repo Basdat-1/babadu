@@ -12,5 +12,9 @@ urlpatterns = [
     path('ujian-kualifikasi/pilih', pilih_ujian_kualifikasi, name='pilih_ujian_kualifikasi'),
     path('ujian-kualifikasi/soal', soal_ujian_kualifikasi, name='soal_ujian_kualifikasi'),
     path('ujian-kualifikasi/riwayat', riwayat_ujian_kualifikasi, name='riwayat_ujian_kualifikasi'),
+    path('c-sponsor', c_sponsor, name='c_sponsor'),
+    path('list-sponsor/', list_sponsor, name='list_sponsor'),
+    path('enrolled-event/', enrolled_event, name='enrolled_event'),
+    path('enrolled-partai-kompetisi-event/', enrolled_partai_kompetisi, name='enrolled_partai_kompetisi'),
 
 ]
