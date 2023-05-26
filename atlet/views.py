@@ -406,3 +406,95 @@ def convertJenisPartaiName(name):
         return "XD"
     else:
         return None
+
+@csrf_exempt
+def c_sponsor(request):
+    print("test")
+    if request.method != 'POST':
+        return r_sponsor(request, False)
+    print(request.POST)
+    nama_sponsor = request.POST.get("nama_sponsor")
+    tanggal_mulai = request.POST.get("tanggal_mulai")
+    tanggal_selesai = request.POST.get("tanggal_selesai")
+    print(nama_sponsor)
+    if not nama_sponsor:
+        return r_sponsor(request, True)        
+    id_atlet = request.session["member_id"]
+    id_sponsor = str(query(f"SELECT S.ID FROM SPONSOR S WHERE S.nama_brand ='{nama_sponsor}';")[0]["id"])
+    print(id_sponsor)
+    query(f"INSERT INTO ATLET_SPONSOR VALUES ('{id_atlet}', '{id_sponsor}', '{tanggal_mulai}', '{tanggal_selesai}');")
+
+    return redirect('/atlet/list-sponsor')
+def list_sponsor(request):
+    id_atlet = request.session["member_id"]
+    isi_table_sponsor = query("""SELECT S.nama_brand, ASP.tgl_mulai, ASP.tgl_selesai FROM ATLET A, SPONSOR S, ATLET_SPONSOR ASP WHERE S.id = ASP.id_sponsor AND A.ID = ASP.ID_ATLET AND A.ID='{}';
+                        """.format(id_atlet))
+    context = {
+        "isi_table_sponsor": isi_table_sponsor
+    }
+    return render(request, "list_sponsor.html", context)
+
+def r_sponsor(request, fail):
+    id_atlet = request.session["member_id"]
+    list_sponsor = query(f"SELECT S.nama_brand FROM SPONSOR S WHERE NOT EXISTS(SELECT S.nama_brand FROM ATLET_SPONSOR ASP WHERE S.id = ASP.id_sponsor AND ASP.id_atlet= '{id_atlet}');")
+    context = {
+        "list_sponsor": list_sponsor,
+        "fail": False
+    }
+
+    if fail:
+        context["fail"] = True
+    return render(request, "c_sponsor.html", context)
+
+def enrolled_event(request):
+    id_atlet = request.session["member_id"]
+    list_event = query(f""" SELECT E.nama_event, E.tahun, E.nama_stadium, E.kategori_superseries, E.tgl_mulai, E.tgl_selesai  FROM EVENT E 
+                    JOIN PARTAI_KOMPETISI PKM ON E.nama_event = PKM.nama_event
+                    JOIN partai_peserta_kompetisi PPK  ON (PPK.nama_event=E.nama_event AND PPK.tahun_event = E.tahun AND PPK.jenis_partai = PKM.jenis_partai)
+                    WHERE PPK.nomor_peserta IN (SELECT nomor_peserta
+                    FROM peserta_kompetisi PK JOIN atlet_ganda AG ON PK.id_atlet_ganda = AG.id_atlet_ganda
+                    WHERE '{id_atlet}' IN (AG.id_atlet_kualifikasi, AG.id_atlet_kualifikasi_2, PK.id_atlet_kualifikasi)); """)
+    context = {
+        "list_event": list_event
+    }
+    if request.method == 'POST':
+        id_atlet = request.POST.get('id_atlet')
+        nama_event = request.POST.get('nama_event')
+        tahun = request.POST.get('tahun')
+
+        delete_enrolled = query(f"""
+            DELETE FROM PESERTA_MENDAFTAR_EVENT 
+            WHERE nomor_peserta IN (
+                SELECT nomor_peserta
+                FROM PESERTA_KOMPETISI
+                WHERE id_atlet_kualifikasi = '{id_atlet}'
+            )
+            AND nama_event = '{nama_event}' 
+            AND tahun = '{tahun}'
+            """)
+
+        if delete_enrolled == 0:
+            context['message'] = 'You cannot unenroll from uncompleted event.'
+        return redirect('/atlet/enrolled-event')
+
+    return render(request, "enrolled_event.html", context)
+
+
+
+def enrolled_partai_kompetisi(request) :
+    id_atlet = request.session["member_id"]
+    list_partai_kompetisi_event = query(f""" SELECT E.nama_event, E.tahun, E.nama_stadium,PPK.jenis_partai ,E.kategori_superseries, E.tgl_mulai, E.tgl_selesai FROM EVENT E 
+                                    JOIN PARTAI_KOMPETISI ParKom ON E.nama_event = ParKom.nama_event
+                                    JOIN partai_peserta_kompetisi PPK  ON (PPK.nama_event=E.nama_event AND PPK.tahun_event = E.tahun AND PPK.jenis_partai = ParKom.jenis_partai)
+                                    WHERE PPK.nomor_peserta IN (SELECT nomor_peserta
+                                    FROM peserta_kompetisi PK
+                                    JOIN atlet_ganda AG ON PK.id_atlet_ganda = AG.id_atlet_ganda
+                                    WHERE '{id_atlet}' IN (AG.id_atlet_kualifikasi, AG.id_atlet_kualifikasi_2, PK.id_atlet_kualifikasi))
+                                    ; """)
+    print(list_partai_kompetisi_event)
+    context = {
+        "list_partai_kompetisi_event": list_partai_kompetisi_event
+    }
+    return render(request, "enrolled_partai_kompetisi_event.html", context)
+
+
