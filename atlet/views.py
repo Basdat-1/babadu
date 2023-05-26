@@ -1,4 +1,3 @@
-from logging import raiseExceptions
 from django.shortcuts import render
 from django.shortcuts import redirect
 from utils.query import query
@@ -7,7 +6,6 @@ import string
 import uuid
 
 # Create your views here.
-
 
 def atletHome(request):
     nama = string.capwords(request.session['nama'])
@@ -294,8 +292,6 @@ def getIdUser(request):
     
     id = query(f"""SELECT id FROM MEMBER
                WHERE nama = '{nama}' AND email = '{email}'""")[0]['id']
-    # true = men
-    # false = women
     return id
 
 def getIdByName(nama):
