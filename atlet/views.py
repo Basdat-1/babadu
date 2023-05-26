@@ -8,7 +8,7 @@ import uuid
 # Create your views here.
 
 def atletHome(request):
-    nama = string.capwords(request.session['nama'])
+    nama = request.session['nama']
     email = request.session['email']
     id = request.session["member_id"]
 
@@ -107,6 +107,7 @@ def daftarEventStadium(request, namaStadium):
     return render(request, 'stadium_event.html', context)
 
 def daftarPartaiKompetisi(request, namaStadium, namaEvent, tahunEvent):
+    nama_user = request.session["nama"]
     user_sex = checkUserSex(request)
 
     result = query(f"""SELECT * FROM EVENT WHERE nama_event = '{namaEvent}' AND tahun = '{tahunEvent}'""")[0]
@@ -127,7 +128,8 @@ def daftarPartaiKompetisi(request, namaStadium, namaEvent, tahunEvent):
                             FROM ATLET_GANDA
                             UNION
                             SELECT id_atlet_kualifikasi_2
-                            FROM ATLET_GANDA)""")
+                            FROM ATLET_GANDA)
+                            EXCEPT SELECT nama FROM MEMBER WHERE nama = '{nama_user}'""")
     list_atlet_putri = query(f"""SELECT nama FROM ATLET_KUALIFIKASI AK
                             JOIN ATLET A ON AK.id_atlet = A.id
                             JOIN MEMBER M ON A.id = M.id
@@ -136,7 +138,8 @@ def daftarPartaiKompetisi(request, namaStadium, namaEvent, tahunEvent):
                             FROM ATLET_GANDA
                             UNION
                             SELECT id_atlet_kualifikasi_2
-                            FROM ATLET_GANDA)""")
+                            FROM ATLET_GANDA)
+                            EXCEPT SELECT nama FROM MEMBER WHERE nama = '{nama_user}'""")
     list_atlet_putra_putri = query(f"""SELECT nama FROM ATLET_KUALIFIKASI AK
                             JOIN ATLET A ON AK.id_atlet = A.id
                             JOIN MEMBER M ON A.id = M.id
@@ -145,7 +148,8 @@ def daftarPartaiKompetisi(request, namaStadium, namaEvent, tahunEvent):
                             FROM ATLET_GANDA
                             UNION
                             SELECT id_atlet_kualifikasi_2
-                            FROM ATLET_GANDA)""")
+                            FROM ATLET_GANDA)
+                            EXCEPT SELECT nama FROM MEMBER WHERE nama = '{nama_user}'""")
     
     for kategori in list_kategori:
         print(kategori)
